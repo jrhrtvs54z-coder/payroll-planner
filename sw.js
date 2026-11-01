@@ -1,10 +1,17 @@
-/* Payroll Planner offline support: the app shell is served from cache and refreshed in the background. */
-const VERSION = 'pp-1.1.0';
+/* Payroll Planner offline support.
+   The page itself is fetched fresh whenever the phone is online (falling back to the saved copy offline),
+   so updates show up on the next launch. Icons and other files come from the cache and refresh in the background. */
+const VERSION = 'pp-1.2.0';
 const FONTS = 'pp-fonts';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icons/apple-touch-icon.png', './icons/icon-192.png', './icons/icon-512.png'];
+const OFFLINE = new Response('You’re offline and the app isn’t saved on this phone yet. Connect once, then it works offline.', { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(VERSION).then((cache) => cache.addAll(SHELL.map((u) => new Request(u, { cache: 'reload' })))).then(() => self.skipWaiting()));
+  event.waitUntil(
+    caches.open(VERSION)
+      .then((cache) => cache.addAll(SHELL.map((u) => new Request(u, { cache: 'reload' }))))
+      .then(() => self.skipWaiting()),
+  );
 });
 
 self.addEventListener('activate', (event) => {
@@ -15,11 +22,32 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+/* Safari refuses a redirected response for a page load, so copy it into a plain one. */
+async function clean(res) {
+  if (!res.redirected) return res;
+  const body = await res.blob();
+  return new Response(body, { status: res.status, statusText: res.statusText, headers: res.headers });
+}
+
 self.addEventListener('fetch', (event) => {
   const req = event.request;
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin === self.location.origin) {
+    const isPage = req.mode === 'navigate' || url.pathname.endsWith('/') || url.pathname.endsWith('/index.html');
+    if (isPage) {
+      event.respondWith((async () => {
+        const cache = await caches.open(VERSION);
+        try {
+          const res = await clean(await fetch(url.href.split('#')[0], { cache: 'no-cache', credentials: 'same-origin' }));
+          if (res && res.ok) await cache.put('./index.html', res.clone());
+          return res;
+        } catch (e) {
+          return (await cache.match('./index.html')) || (await cache.match('./')) || OFFLINE.clone();
+        }
+      })());
+      return;
+    }
     const fetching = fetch(req).then(async (res) => {
       if (res && res.ok) { const cache = await caches.open(VERSION); await cache.put(req, res.clone()); }
       return res;
@@ -27,9 +55,9 @@ self.addEventListener('fetch', (event) => {
     event.waitUntil(fetching.then(() => {}, () => {}));
     event.respondWith((async () => {
       const cache = await caches.open(VERSION);
-      const cached = (await cache.match(req, { ignoreSearch: true })) || (req.mode === 'navigate' ? await cache.match('./index.html') : undefined);
+      const cached = await cache.match(req, { ignoreSearch: true });
       if (cached) return cached;
-      try { return await fetching; } catch (e) { return new Response('You’re offline and this page isn’t saved yet.', { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' } }); }
+      try { return await fetching; } catch (e) { return OFFLINE.clone(); }
     })());
     return;
   }

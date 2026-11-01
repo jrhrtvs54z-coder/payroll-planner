@@ -293,6 +293,7 @@ svg { display: block; }
 .cat-tile svg { width: 23px; height: 23px; }
 .cat-tile span { font-size: 10.5px; font-weight: 650; font-stretch: 80%; line-height: 1.1; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .cat-tile[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.cat-tile.cat-edit { background: transparent; border-style: dashed; color: var(--ink-2); }
 .keypad { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
 .key { height: 52px; border-radius: 14px; border: 0; background: var(--surface-2); font-family: var(--font-display); font-stretch: 110%; font-size: 24px; font-weight: 600; display: grid; place-items: center; color: var(--ink); }
 .key:active { background: var(--line); }
@@ -486,7 +487,7 @@ svg { display: block; }
           <button class="btn block" id="importBtn" type="button"><span data-icon="download"></span>Import a file</button>
           <p class="hint">Import a backup, or a file of purchases or categories that Claude makes from your statements.</p>
         </section>
-        <section class="card" aria-labelledby="catsTitle">
+        <section class="card" id="catsCard" aria-labelledby="catsTitle" style="scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 66px)">
           <div class="card-head"><h2 class="card-title" id="catsTitle">Categories</h2><button class="link-btn" type="button" id="addCategory">Add category</button></div>
           <div class="cat-rows" id="catRows"></div>
           <p class="hint">Tap a category to rename it, change its icon, move it or delete it. This order is the order on the add screen.</p>
@@ -611,7 +612,7 @@ svg { display: block; }
 <script>
 (() => {
 'use strict';
-const APP_VERSION = '1.1.0';
+const APP_VERSION = '1.2.0';
 const STORE_KEY = 'payroll-planner/v1';
 const DEFAULT_CATS = ['Dining out', 'Delivery apps', 'Groceries', 'Coffee', 'Duty-day food', 'Fuel', 'Car care & wash', 'Internet & subscriptions', 'Laundry', 'قطيات شهرية', 'Grooming & barber', 'Gadgets & electronics', 'Health & gym', 'Entertainment', 'Friends & outings', 'Outdoor & camping', 'Charity & gifts', 'Other'];
 
@@ -832,6 +833,7 @@ const ICONS = {
   book: '<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>',
   wrench: '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
   droplet: '<path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/>',
+  pencil: '<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/>',
 };
 const ICON_CHOICES = ['dining', 'delivery', 'groceries', 'coffee', 'duty', 'fuel', 'car', 'bus', 'wifi', 'shirt', 'coins', 'scissors', 'phone', 'dumbbell', 'cross', 'heart', 'ticket', 'gamepad', 'friends', 'tent', 'gift', 'bag', 'card', 'home', 'book', 'wrench', 'droplet', 'tag', 'other'];
 const ICON_NAMES = { dining: 'Fork and knife', delivery: 'Delivery bag', groceries: 'Cart', coffee: 'Coffee', duty: 'Plane', fuel: 'Fuel pump', car: 'Car', bus: 'Bus', wifi: 'Wi-Fi', shirt: 'Shirt', coins: 'Coins', scissors: 'Scissors', phone: 'Phone', dumbbell: 'Dumbbell', cross: 'Medical', heart: 'Heart', ticket: 'Ticket', gamepad: 'Game controller', friends: 'People', tent: 'Tent', gift: 'Gift', bag: 'Shopping bag', card: 'Card', home: 'House', book: 'Book', wrench: 'Wrench', droplet: 'Water', tag: 'Tag', other: 'More' };
@@ -1564,7 +1566,17 @@ function renderAddMeta() {
 }
 function renderAddCats() {
   const grid = $('#catGrid');
-  grid.replaceChildren(...state.plan.settings.categories.map((c) => h('button', { class: 'cat-tile', type: 'button', 'aria-pressed': String(state.add.category === c), 'aria-label': c, onclick: () => pickCategory(c) }, icon(catIcon(c)), h('span', { text: catShort(c) }))));
+  grid.replaceChildren(
+    ...state.plan.settings.categories.map((c) => h('button', { class: 'cat-tile', type: 'button', 'aria-pressed': String(state.add.category === c), 'aria-label': c, onclick: () => pickCategory(c) }, icon(catIcon(c)), h('span', { text: catShort(c) }))),
+    h('button', { class: 'cat-tile cat-edit', type: 'button', 'aria-label': 'Edit categories', onclick: goEditCategories }, icon('pencil'), h('span', { text: 'Edit' })),
+  );
+}
+function goEditCategories() {
+  closeSheets();
+  state.tab = 'settings'; state.meta.tab = 'settings';
+  saveSoon(); render();
+  const card = $('#catsCard');
+  if (card) setTimeout(() => card.scrollIntoView({ block: 'start', behavior: 'smooth' }), 60);
 }
 function renderAddHint(msg, tone) {
   const el = $('#addHint');
@@ -2045,12 +2057,14 @@ function boot() {
     state.month = currentPeriod();
   }
   render();
-  if ('serviceWorker' in navigator && location.protocol === 'https:') {
+  if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
     const hadController = !!navigator.serviceWorker.controller;
     navigator.serviceWorker.addEventListener('controllerchange', () => {
       if (hadController) toast('A new version of the app is ready.', () => { writeStore(); location.reload(); }, 'Reload');
     });
-    navigator.serviceWorker.register('./sw.js').catch(() => {});
+    navigator.serviceWorker.register('./sw.js', { updateViaCache: 'none' }).then((reg) => {
+      document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') reg.update().catch(() => {}); });
+    }).catch(() => {});
   }
 }
 boot();
