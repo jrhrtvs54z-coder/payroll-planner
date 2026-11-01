@@ -247,6 +247,39 @@ svg { display: block; }
 .steps b { color: var(--ink); }
 .welcome .content { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 30px); }
 
+/* Setup */
+.setup .band { padding-top: calc(env(safe-area-inset-top, 0px) + 8px); }
+.su-head { display: grid; gap: 8px; }
+.su-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 44px; }
+.su-cancel { color: var(--band-muted); }
+.su-title { font-size: 28px; }
+.su-dots { display: flex; gap: 6px; padding-top: 4px; }
+.su-dots span { height: 4px; flex: 1; border-radius: 999px; background: var(--band-track); }
+.su-dots span[data-on="true"] { background: var(--h7); }
+.su-body { padding-bottom: calc(110px + env(safe-area-inset-bottom, 0px)); }
+.su-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; padding-block: 9px; border-top: 1px solid var(--line); }
+.su-row:first-child { border-top: 0; padding-top: 0; }
+.su-label { display: grid; gap: 2px; min-width: 0; }
+.su-label b { font-size: 15px; font-weight: 600; }
+.su-label span { font-size: 12.5px; color: var(--muted); }
+.su-input { width: 7.5ch; border: 1px solid var(--line-2); background: var(--surface-2); border-radius: 999px; padding: 9px 12px; text-align: right; font-variant-numeric: tabular-nums; font-weight: 650; font-size: 16px; color: var(--ink); }
+.su-input::placeholder, .su-name::placeholder { color: var(--muted); font-weight: 400; }
+.su-input.big { width: 100%; font-family: var(--font-display); font-stretch: 116%; font-size: 34px; text-align: left; border-radius: var(--r-sm); padding: 10px 14px; }
+.su-name { min-width: 0; width: 100%; border: 1px solid var(--line-2); background: var(--surface-2); border-radius: 999px; padding: 9px 12px; font-size: 16px; color: var(--ink); }
+.su-bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; background: color-mix(in srgb, var(--surface) 92%, transparent); -webkit-backdrop-filter: saturate(1.6) blur(16px); backdrop-filter: saturate(1.6) blur(16px); border-top: 1px solid var(--line); padding-top: 10px; padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); }
+.su-bar-inner { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.su-left { display: grid; gap: 1px; }
+.su-left-v { font-family: var(--font-display); font-stretch: 112%; font-weight: 700; font-size: 21px; font-variant-numeric: tabular-nums; }
+.su-left-v[data-neg="true"] { color: var(--bad); }
+.su-bar .btn { min-width: 8.5rem; }
+.su-sum { display: grid; gap: 10px; }
+.su-sum-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 15px; }
+.su-sum-row > span { display: inline-flex; align-items: center; gap: 8px; }
+.su-sum-row.total { border-top: 1px solid var(--line); padding-top: 10px; font-weight: 700; }
+.su-tip { margin: 0; border-radius: var(--r-sm); background: var(--accent-soft); color: var(--accent-ink); padding: 10px 12px; font-size: 13.5px; }
+.su-tip[data-tone="bad"] { background: var(--bad-soft); color: var(--bad); }
+.su-tip:empty { display: none; }
+
 /* Tab bar */
 .tabbar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 30; background: color-mix(in srgb, var(--surface) 90%, transparent); -webkit-backdrop-filter: saturate(1.6) blur(16px); backdrop-filter: saturate(1.6) blur(16px); border-top: 1px solid var(--line); padding: 6px max(8px, env(safe-area-inset-right, 0px)) calc(4px + env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px)); }
 .tabbar-inner { max-width: 640px; margin-inline: auto; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: end; }
@@ -339,25 +372,50 @@ svg { display: block; }
   <div class="band"><div class="gutter"><div class="inner wl-top">
     <div class="wl-mark" aria-hidden="true"><svg viewBox="0 0 48 48"><g transform="rotate(-90 24 24)" fill="none" stroke-width="7"><circle cx="24" cy="24" r="15" stroke="#22312c"/><circle cx="24" cy="24" r="15" stroke="#2fbf8b" stroke-dasharray="36 94.25"/><circle cx="24" cy="24" r="15" stroke="#3987e5" stroke-dasharray="20 94.25" stroke-dashoffset="-38.5"/><circle cx="24" cy="24" r="15" stroke="#9085e9" stroke-dasharray="16 94.25" stroke-dashoffset="-61"/><circle cx="24" cy="24" r="15" stroke="#d95926" stroke-dasharray="11 94.25" stroke-dashoffset="-79.5"/></g></svg></div>
     <h1 class="wl-title">Payroll Planner</h1>
-    <p class="band-note">Your salary split, spending and balances. Everything stays on this iPhone.</p>
+    <p class="band-note">Plan your salary, track what you spend and watch your savings grow. Everything stays on your phone.</p>
   </div></div></div>
   <div class="gutter"><div class="inner content">
     <section class="card" id="installCard" hidden aria-labelledby="installTitle">
       <h2 class="card-title" id="installTitle">Install it first</h2>
-      <ol class="steps">
+      <ol class="steps" id="stepsIos" hidden>
         <li>Tap the <b>Share</b> button in Safari.</li>
         <li>Choose <b>Add to Home Screen</b>, then <b>Add</b>.</li>
-        <li>Open <b>Payroll</b> from your home screen and import your data there.</li>
+        <li>Open <b>Payroll</b> from your home screen and set it up there.</li>
       </ol>
-      <p class="card-note">The installed app keeps its own storage, so anything you enter here in Safari won’t carry over.</p>
+      <ol class="steps" id="stepsAndroid" hidden>
+        <li>Tap <b>⋮</b> at the top right of Chrome.</li>
+        <li>Choose <b>Add to Home screen</b> or <b>Install app</b>, then <b>Install</b>.</li>
+        <li>Open <b>Payroll</b> from your home screen.</li>
+      </ol>
+      <p class="card-body" id="stepsDesktop" hidden>Open this page on your phone to install it like an app.</p>
+      <p class="card-note" id="iosNote" hidden>On iPhone the installed app keeps its own storage, so anything you enter here in Safari won’t carry over.</p>
     </section>
     <section class="card" aria-labelledby="startTitle">
-      <h2 class="card-title" id="startTitle">Bring in your plan</h2>
-      <p class="card-body">Import the backup file Claude sent you, or paste its text. You can also start with an empty plan.</p>
-      <button class="btn primary block" id="wlImport" type="button">Import my data</button>
-      <button class="btn ghost block" id="wlFresh" type="button">Start with an empty plan</button>
+      <h2 class="card-title" id="startTitle">Get started</h2>
+      <p class="card-body">Answer a few questions about your salary and where it goes. It takes about a minute, and you can change everything later.</p>
+      <button class="btn primary block" id="wlSetup" type="button">Set up my plan</button>
+      <button class="btn ghost block" id="wlImport" type="button">I have a backup file</button>
     </section>
+    <p class="hint">Your numbers stay on your phone. There’s no account and no server. Payroll Planner helps you plan; it isn’t financial advice.</p>
   </div></div>
+</div>
+
+<div id="setup" class="setup" hidden>
+  <div class="band"><div class="gutter"><div class="inner su-head">
+    <div class="su-top">
+      <button class="pbtn" type="button" id="suBack" aria-label="Back"><span data-icon="back"></span></button>
+      <span class="eyebrow" id="suStep">Step 1 of 5</span>
+      <button class="link-btn su-cancel" type="button" id="suCancel">Cancel</button>
+    </div>
+    <h1 class="wl-title su-title" id="suTitle">—</h1>
+    <p class="band-note" id="suLead">—</p>
+    <div class="su-dots" id="suDots" aria-hidden="true"></div>
+  </div></div></div>
+  <div class="gutter"><div class="inner content su-body" id="suBody"></div></div>
+  <div class="su-bar"><div class="gutter"><div class="inner su-bar-inner">
+    <div class="su-left"><span class="eyebrow">Left to assign</span><span class="su-left-v" id="suLeft">—</span></div>
+    <button class="btn primary" type="button" id="suNext">Next</button>
+  </div></div></div>
 </div>
 
 <div id="app" hidden>
@@ -464,7 +522,7 @@ svg { display: block; }
     <!-- Settings -->
     <section id="panel-settings" aria-labelledby="appTitle" hidden>
       <div class="band"><div class="gutter"><div class="inner st-hero">
-        <span class="eyebrow">Stored on this iPhone</span>
+        <span class="eyebrow">Stored on this phone</span>
         <p class="band-note" id="stBackupNote">—</p>
       </div></div></div>
       <div class="gutter"><div class="inner content">
@@ -482,10 +540,10 @@ svg { display: block; }
         </section>
         <section class="card" aria-labelledby="backupTitle">
           <h2 class="card-title" id="backupTitle">Backup</h2>
-          <p class="card-body">Your data lives only on this iPhone, and removing the app from your home screen deletes it. Back up once a month. Save the file to iCloud Drive, or attach it in a chat with Claude for a review.</p>
+          <p class="card-body">Your data lives only on this phone, and removing the app from your home screen deletes it. Back up once a month and keep the file somewhere safe, like iCloud Drive or Google Drive.</p>
           <button class="btn primary block" id="backupBtn" type="button"><span data-icon="share"></span>Back up now</button>
           <button class="btn block" id="importBtn" type="button"><span data-icon="download"></span>Import a file</button>
-          <p class="hint">Import a backup, or a file of purchases or categories that Claude makes from your statements.</p>
+          <p class="hint">Import a backup to restore your data, for example on a new phone.</p>
         </section>
         <section class="card" id="catsCard" aria-labelledby="catsTitle" style="scroll-margin-top: calc(env(safe-area-inset-top, 0px) + 66px)">
           <div class="card-head"><h2 class="card-title" id="catsTitle">Categories</h2><button class="link-btn" type="button" id="addCategory">Add category</button></div>
@@ -575,7 +633,7 @@ svg { display: block; }
 <div class="sheet" id="importSheet" role="dialog" aria-modal="true" aria-labelledby="importTitle" hidden>
   <div class="grip" aria-hidden="true"></div>
   <h2 class="sheet-title" id="importTitle">Import</h2>
-  <p class="card-body">Choose the file from Claude or from a backup. You can also paste its text.</p>
+  <p class="card-body">Choose a backup file. You can also paste its text.</p>
   <label class="btn primary block file-btn"><span data-icon="download"></span>Choose a file<input type="file" id="importFile" accept=".json,application/json,text/plain"></label>
   <div class="field"><label for="importText">Or paste the text</label><textarea id="importText" rows="4" autocomplete="off" spellcheck="false"></textarea></div>
   <button class="btn block" type="button" id="importPaste">Import pasted text</button>
@@ -612,9 +670,9 @@ svg { display: block; }
 <script>
 (() => {
 'use strict';
-const APP_VERSION = '1.2.0';
+const APP_VERSION = '1.3.0';
 const STORE_KEY = 'payroll-planner/v1';
-const DEFAULT_CATS = ['Dining out', 'Delivery apps', 'Groceries', 'Coffee', 'Duty-day food', 'Fuel', 'Car care & wash', 'Internet & subscriptions', 'Laundry', 'قطيات شهرية', 'Grooming & barber', 'Gadgets & electronics', 'Health & gym', 'Entertainment', 'Friends & outings', 'Outdoor & camping', 'Charity & gifts', 'Other'];
+const DEFAULT_CATS = ['Dining out', 'Delivery apps', 'Groceries', 'Coffee', 'Fuel', 'Car care', 'Bills & subscriptions', 'Shopping', 'Clothes', 'Health & gym', 'Grooming', 'Entertainment', 'Friends & outings', 'Travel', 'Gifts & charity', 'Other'];
 
 /* PURE:START */
 const GROUPS = [
@@ -843,6 +901,8 @@ const CAT_META = {
   'Laundry': ['Laundry', 'shirt'], 'قطيات شهرية': ['قطيات', 'coins'], 'Grooming & barber': ['Barber', 'scissors'], 'Gadgets & electronics': ['Gadgets', 'phone'],
   'Health & gym': ['Health', 'dumbbell'], 'Entertainment': ['Fun', 'ticket'], 'Friends & outings': ['Friends', 'friends'], 'Outdoor & camping': ['Outdoor', 'tent'],
   'Charity & gifts': ['Charity', 'gift'], 'Other': ['Other', 'other'],
+  'Car care': ['Car care', 'car'], 'Bills & subscriptions': ['Bills', 'wifi'], 'Shopping': ['Shopping', 'bag'], 'Clothes': ['Clothes', 'shirt'],
+  'Grooming': ['Grooming', 'scissors'], 'Travel': ['Travel', 'duty'], 'Gifts & charity': ['Gifts', 'gift'],
 };
 const defaultShort = (c) => (CAT_META[c] ? CAT_META[c][0] : String(c || 'Other').split(/\s*[&,]\s*|\s+/)[0]);
 function catShort(c) {
@@ -912,7 +972,7 @@ const clone = (x) => JSON.parse(JSON.stringify(x));
 /* State + storage */
 const TABS = ['spending', 'plan', 'accounts', 'settings'];
 const TITLES = { spending: 'Spending', plan: 'Plan', accounts: 'Accounts', settings: 'Settings' };
-const state = { plan: null, tx: [], meta: { lastBackup: null, tab: 'spending' }, month: null, tab: 'spending', edit: null, add: null, pendingImport: null, toastTimer: null, undo: null };
+const state = { plan: null, tx: [], meta: { lastBackup: null, tab: 'spending' }, month: null, tab: 'spending', edit: null, add: null, cat: null, setup: null, pendingImport: null, toastTimer: null, undo: null };
 let saveTimer = null;
 function readStore() {
   try { const raw = localStorage.getItem(STORE_KEY); return raw ? JSON.parse(raw) : null; } catch (e) { return null; }
@@ -925,7 +985,7 @@ function writeStore() {
     setStatus('');
     return true;
   } catch (e) {
-    setStatus('Couldn’t save on this iPhone. Free up storage, then try again.');
+    setStatus('Couldn’t save on this phone. Free up storage, then try again.');
     return false;
   }
 }
@@ -936,7 +996,7 @@ function defaults() {
   const t = todayIso();
   return {
     schema: 1,
-    settings: { usdRate: 0.3082, payDay: 23, startMonth: periodOf(t, 23), personalLineId: 'lp', categories: DEFAULT_CATS.slice() },
+    settings: { usdRate: 0.3082, payDay: 1, startMonth: periodOf(t, 1), personalLineId: 'lp', categories: DEFAULT_CATS.slice() },
     income: [{ id: 'i1', name: 'Net salary', amount: 0, start: '', end: '' }],
     lines: [{ id: 'lp', group: 'Spending accounts', name: 'Personal account', amount: 0, currency: 'KWD', per: 'month', start: '', end: '', note: '' }],
     balances: [{ id: 'b1', name: 'Emergency fund', amount: null, kind: 'emergency' }, { id: 'b2', name: 'Savings account', amount: null, kind: 'savings' }, { id: 'b3', name: 'Yearly bills pot', amount: null, kind: 'yearly' }],
@@ -975,7 +1035,7 @@ function sanitizeTx(list) {
   }).filter(Boolean);
 }
 const payDay = () => state.plan.settings.payDay;
-const currentPeriod = () => periodOf(todayIso(), state.plan ? payDay() : 23);
+const currentPeriod = () => periodOf(todayIso(), state.plan ? payDay() : 1);
 const horizon = () => monthsFrom(currentPeriod(), 36);
 function monthBounds() {
   const cur = currentPeriod();
@@ -989,8 +1049,11 @@ const txTitle = (t) => (t.desc && t.desc !== 'Purchase' ? t.desc : t.category ||
 /* Rendering */
 function render() {
   const ready = !!state.plan;
-  $('#welcome').hidden = ready;
+  const inSetup = !ready && !!state.setup;
+  $('#welcome').hidden = ready || inSetup;
+  $('#setup').hidden = !inSetup;
   $('#app').hidden = !ready;
+  if (inSetup) { renderSetup(); return; }
   if (!ready) { renderWelcome(); return; }
   if (!state.month) state.month = currentPeriod();
   TABS.forEach((t) => {
@@ -1009,10 +1072,186 @@ function render() {
   else renderSettings();
   if (fk) { const el = document.querySelector(`[data-fk="${fk}"]`); if (el) el.focus(); }
 }
+function devicePlatform() {
+  if (/iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) return 'ios';
+  if (/Android/i.test(navigator.userAgent)) return 'android';
+  return 'desktop';
+}
 function renderWelcome() {
   const standalone = window.navigator.standalone === true || (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
-  const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  $('#installCard').hidden = !(ios && !standalone);
+  const pf = devicePlatform();
+  $('#installCard').hidden = standalone;
+  $('#stepsIos').hidden = pf !== 'ios';
+  $('#iosNote').hidden = pf !== 'ios';
+  $('#stepsAndroid').hidden = pf !== 'android';
+  $('#stepsDesktop').hidden = pf !== 'desktop';
+}
+
+/* First-run setup: salary, fixed costs, saving, spending, review */
+const SETUP_STEPS = [
+  { key: 'salary', title: 'Your salary', lead: 'What lands in your account each month, after deductions?' },
+  { key: 'fixed', title: 'Fixed costs', lead: 'What goes out every month no matter what? Leave blank anything that doesn’t apply.' },
+  { key: 'keep', title: 'Saving and investing', lead: 'How much do you want to keep each month?' },
+  { key: 'spend', title: 'Spending money', lead: 'How much do you spend day to day? The Spending tab tracks this.' },
+  { key: 'review', title: 'Your plan', lead: 'Here’s where your salary goes. You can change any of it later.' },
+];
+function newSetup() {
+  return {
+    step: 0, salary: '', payDay: 1,
+    rows: [
+      { id: 'rent', section: 'fixed', group: 'Obligations', name: 'Rent or housing', sub: 'Or what you give at home', amount: '' },
+      { id: 'car', section: 'fixed', group: 'Obligations', name: 'Car loan or installments', sub: '', amount: '' },
+      { id: 'phone', section: 'fixed', group: 'Obligations', name: 'Phone, internet and subscriptions', sub: '', amount: '' },
+      { id: 'family', section: 'fixed', group: 'Family', name: 'Family support', sub: 'Money you send to family', amount: '' },
+      { id: 'ef', section: 'keep', group: 'Savings', name: 'Emergency fund', sub: 'Cash for surprises', amount: '' },
+      { id: 'save', section: 'keep', group: 'Savings', name: 'Savings', sub: 'For goals like a car or a trip', amount: '' },
+      { id: 'inv', section: 'keep', group: 'Investing', name: 'Investing', sub: 'Money you won’t touch for years', amount: '' },
+      { id: 'lp', section: 'spend', group: 'Spending accounts', name: 'Personal spending', sub: 'Food, fuel, coffee, outings', amount: '' },
+      { id: 'travel', section: 'spend', group: 'Spending accounts', name: 'Travel fund', sub: 'Optional', amount: '' },
+      { id: 'shop', section: 'spend', group: 'Spending accounts', name: 'Shopping', sub: 'Optional', amount: '' },
+    ],
+  };
+}
+const suNum = (v) => { const n = parseAmount(v); return n == null ? 0 : r3(n); };
+function setupTotals() {
+  const su = state.setup;
+  const salary = suNum(su.salary);
+  const out = r3(su.rows.reduce((sum, r) => sum + suNum(r.amount), 0));
+  return { salary, out, left: r3(salary - out) };
+}
+function suInput(id, value, onInput, big) {
+  const el = h('input', { id, class: big ? 'su-input big' : 'su-input', type: 'text', inputmode: 'decimal', autocomplete: 'off', placeholder: big ? '0' : 'KD', value: value || '' });
+  el.addEventListener('input', () => { onInput(el.value); updateSetupBar(); });
+  el.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); el.blur(); } });
+  return el;
+}
+function setupRow(r) {
+  const amt = suInput(`su-${r.id}`, r.amount, (v) => { r.amount = v; }, false);
+  amt.setAttribute('aria-label', `${r.name || 'Fixed cost'} in KD`);
+  if (r.custom) {
+    const name = h('input', { class: 'su-name', type: 'text', maxlength: '40', placeholder: 'Name, e.g. Gym', value: r.name, 'aria-label': 'Name of the fixed cost' });
+    name.addEventListener('input', () => { r.name = name.value; });
+    return h('div', { class: 'su-row' }, name, amt);
+  }
+  return h('div', { class: 'su-row' }, h('label', { class: 'su-label', for: `su-${r.id}` }, h('b', { text: r.name }), r.sub ? h('span', { text: r.sub }) : null), amt);
+}
+function setupPayday() {
+  const out = h('output', { class: 'amt-input', text: ordinal(state.setup.payDay) });
+  const set = (d) => { state.setup.payDay = Math.min(28, Math.max(1, d)); out.textContent = ordinal(state.setup.payDay); };
+  return h('div', { class: 'amt' },
+    h('button', { class: 'step', type: 'button', 'aria-label': 'Earlier payday', text: '−', onclick: () => set(state.setup.payDay - 1) }),
+    out,
+    h('button', { class: 'step', type: 'button', 'aria-label': 'Later payday', text: '+', onclick: () => set(state.setup.payDay + 1) }));
+}
+function renderSetup(keepScroll) {
+  const su = state.setup;
+  const step = SETUP_STEPS[su.step];
+  $('#suStep').textContent = `Step ${su.step + 1} of ${SETUP_STEPS.length}`;
+  $('#suTitle').textContent = step.title;
+  $('#suLead').textContent = step.lead;
+  $('#suDots').replaceChildren(...SETUP_STEPS.map((_, i) => h('span', { 'data-on': String(i <= su.step) })));
+  const body = $('#suBody');
+  body.replaceChildren();
+  if (step.key === 'salary') {
+    body.append(
+      h('section', { class: 'card' },
+        h('label', { class: 'set-label', for: 'suSalary' }, h('b', { text: 'Net salary (KD)' }), h('span', { text: 'Include regular allowances. You can add raises later.' })),
+        suInput('suSalary', su.salary, (v) => { su.salary = v; }, true)),
+      h('section', { class: 'card' }, h('div', { class: 'set-row' },
+        h('div', { class: 'set-label' }, h('b', { text: 'Payday' }), h('span', { text: 'The day your salary usually arrives. Paid on the 29th to 31st? Pick the 28th.' })),
+        setupPayday())),
+    );
+  } else if (step.key === 'review') {
+    body.append(...setupReview());
+  } else {
+    const card = h('section', { class: 'card' });
+    su.rows.filter((r) => r.section === step.key).forEach((r) => card.append(setupRow(r)));
+    if (step.key === 'fixed') card.append(h('button', { class: 'link-btn', type: 'button', text: '+ Add another fixed cost', onclick: addSetupRow, style: 'justify-self:start' }));
+    body.append(card);
+    if (step.key === 'keep' || step.key === 'spend') body.append(h('p', { class: 'su-tip', id: 'suTip' }));
+  }
+  updateSetupBar();
+  if (!keepScroll) window.scrollTo({ top: 0 });
+}
+function addSetupRow() {
+  state.setup.rows.splice(state.setup.rows.filter((r) => r.section === 'fixed').length, 0, { id: uid('x'), section: 'fixed', group: 'Obligations', name: '', amount: '', custom: true });
+  renderSetup(true);
+  const names = $$('.su-name');
+  if (names.length) names[names.length - 1].focus();
+}
+function updateSetupBar() {
+  const su = state.setup; if (!su) return;
+  const t = setupTotals();
+  const el = $('#suLeft');
+  el.replaceChildren(money(t.left, { unit: 'KD' }));
+  el.dataset.neg = String(t.left < -EPS);
+  const last = su.step === SETUP_STEPS.length - 1;
+  const next = $('#suNext');
+  next.textContent = last ? 'Start using it' : 'Next';
+  next.disabled = (su.step === 0 && t.salary <= 0) || (last && t.left < -EPS);
+  const tip = $('#suTip');
+  if (!tip) return;
+  const key = SETUP_STEPS[su.step].key;
+  tip.dataset.tone = '';
+  if (key === 'keep') tip.textContent = t.salary > 0 ? `A common guideline is to keep at least 20% of your salary: ${plainKD(Math.round(t.salary * 0.2))} KD a month.` : '';
+  if (key === 'spend') {
+    if (t.left < -EPS) { tip.textContent = `That’s ${plainKD(-t.left)} KD more than you earn. Lower something before you finish.`; tip.dataset.tone = 'bad'; }
+    else tip.textContent = `${plainKD(t.left)} KD is left over. It stays as leftover until you give it a job.`;
+  }
+}
+function setupReview() {
+  const su = state.setup;
+  const t = setupTotals();
+  const groups = {};
+  GROUP_KEYS.forEach((k) => { groups[k] = 0; });
+  su.rows.forEach((r) => { groups[r.group] = r3(groups[r.group] + suNum(r.amount)); });
+  const card = h('section', { class: 'card su-sum' },
+    h('div', { class: 'su-sum-row' }, h('span', { text: 'Net salary' }), h('b', {}, money(t.salary, { unit: 'KD' }))));
+  GROUPS.forEach((g) => {
+    if (groups[g.key] > EPS) card.append(h('div', { class: 'su-sum-row' }, h('span', {}, h('span', { class: 'sw', style: `background:${g.c}` }), g.key), h('b', {}, money(groups[g.key], { unit: 'KD' }))));
+  });
+  card.append(h('div', { class: 'su-sum-row total' }, h('span', {}, h('span', { class: 'sw', style: `background:${LEFT.c}` }), 'Leftover'), h('b', { style: t.left < -EPS ? 'color: var(--bad)' : null }, money(t.left, { unit: 'KD' }))));
+  const kept = r3(groups.Investing + groups.Savings + Math.max(0, t.left));
+  const tip = t.left < -EPS
+    ? h('p', { class: 'su-tip', 'data-tone': 'bad', text: `Your plan spends ${plainKD(-t.left)} KD more than you earn. Go back and lower something.` })
+    : h('p', { class: 'su-tip', text: `You keep ${plainKD(kept)} KD a month (${pct(kept, t.salary)}% of your salary), counting savings, investing and leftover. Tap + whenever you spend.` });
+  return [card, tip];
+}
+function setupNext() {
+  const su = state.setup; if (!su) return;
+  const t = setupTotals();
+  if (su.step === 0 && t.salary <= 0) return;
+  if (su.step < SETUP_STEPS.length - 1) { su.step += 1; renderSetup(); return; }
+  if (t.left < -EPS) return;
+  finishSetup();
+}
+function setupBack() {
+  const su = state.setup; if (!su) return;
+  if (su.step === 0) { state.setup = null; render(); return; }
+  su.step -= 1;
+  renderSetup();
+}
+function finishSetup() {
+  const su = state.setup;
+  const t = setupTotals();
+  const p = defaults();
+  p.settings.payDay = su.payDay;
+  p.settings.startMonth = periodOf(todayIso(), su.payDay);
+  p.settings.personalLineId = 'lp';
+  p.income = [{ id: 'i1', name: 'Net salary', amount: t.salary, start: '', end: '' }];
+  p.lines = su.rows.filter((r) => suNum(r.amount) > 0 || r.id === 'lp').map((r) => ({
+    id: r.id === 'lp' ? 'lp' : uid('l'), group: r.group, name: (r.name || '').trim() || 'Fixed cost', amount: suNum(r.amount), currency: 'KWD', per: 'month', start: '', end: '', note: '',
+  }));
+  state.plan = normalize(p);
+  state.tx = [];
+  state.setup = null;
+  state.month = currentPeriod();
+  state.tab = 'plan'; state.meta.tab = 'plan';
+  writeStore();
+  if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+  render();
+  window.scrollTo({ top: 0 });
+  toast('Your plan is ready. Tap + whenever you spend.');
 }
 function renderPeriod() {
   const { start, end } = periodBounds(state.month, payDay());
@@ -1048,7 +1287,7 @@ function renderSpending() {
   paceEl.hidden = ps.when !== 'current' || ps.planAmt <= EPS;
   paceEl.style.left = `${(ps.dayNow / ps.days) * 100}%`;
   let note;
-  if (!ps.line) note = 'Add a Personal account line in your plan to give this account a monthly amount.';
+  if (!ps.line) note = 'Add a personal spending line to your plan to track your spending here.';
   else if (ps.when === 'future') note = `This pay period hasn’t started yet. ${plainKD(ps.planAmt)} KD is planned.`;
   else if (ps.when === 'past') note = ps.left >= -EPS ? `Finished ${plainKD(ps.left)} KD under plan.` : `Finished ${plainKD(-ps.left)} KD over plan.`;
   else if (ps.left < -EPS) note = `You’re ${plainKD(-ps.left)} KD over plan with ${ps.daysLeft} day${ps.daysLeft === 1 ? '' : 's'} to go.`;
@@ -1488,7 +1727,7 @@ function renderSettings() {
     h('span', { class: 'cat-row-name', text: c }),
     h('span', { class: 'cat-row-meta', text: counts[c] ? String(counts[c]) : '' }),
     h('span', { class: 'chev' }, icon('fwd')))));
-  $('#aboutText').textContent = `Payroll Planner ${APP_VERSION}. ${state.plan.lines.length} plan lines, ${state.tx.length} purchases and ${state.plan.balances.length} accounts stored on this iPhone. Nothing is sent anywhere.`;
+  $('#aboutText').textContent = `Payroll Planner ${APP_VERSION}. ${state.plan.lines.length} plan lines, ${state.tx.length} purchases and ${state.plan.balances.length} accounts are stored on this phone. Your numbers never leave it: there’s no account and no server, and the app only downloads its own updates and fonts. It helps you plan, but it isn’t financial advice.`;
 }
 const ordinal = (n) => { const v = n % 100; const suf = (v >= 11 && v <= 13) ? 'th' : ({ 1: 'st', 2: 'nd', 3: 'rd' }[n % 10] || 'th'); return `${n}${suf}`; };
 
@@ -1845,7 +2084,7 @@ async function exportBackup() {
     }
     state.meta.lastBackup = todayIso();
     writeStore(); render();
-    toast('Backup ready. Keep the file in iCloud Drive or Files.');
+    toast('Backup ready. Keep the file somewhere safe, like iCloud Drive or Google Drive.');
   } catch (e) {
     if (e && e.name === 'AbortError') return;
     toast('The backup couldn’t be shared. Try again.');
@@ -1853,7 +2092,7 @@ async function exportBackup() {
 }
 function parseImport(text) {
   let obj;
-  try { obj = JSON.parse(String(text || '').trim()); } catch (e) { return { error: 'That isn’t a Payroll Planner file. Pick the .json file Claude sent you or one from a backup.' }; }
+  try { obj = JSON.parse(String(text || '').trim()); } catch (e) { return { error: 'That isn’t a Payroll Planner file. Pick a backup file that ends in .json.' }; }
   if (obj && obj.plan && obj.plan.settings) return { kind: 'backup', obj };
   if (obj && obj.type === 'transactions' && Array.isArray(obj.tx)) return { kind: 'tx', obj };
   if (obj && obj.type === 'categories' && Array.isArray(obj.categories)) return { kind: 'categories', obj };
@@ -1867,7 +2106,7 @@ function handleImport(text) {
   if (res.kind === 'backup' && state.plan) {
     state.pendingImport = res;
     const when = res.obj.exportedAt ? longDate(String(res.obj.exportedAt).slice(0, 10)) : 'an earlier date';
-    $('#importConfirmText').textContent = `Replace everything on this iPhone with the backup from ${when}? It has ${Array.isArray(res.obj.tx) ? res.obj.tx.length : 0} purchases.`;
+    $('#importConfirmText').textContent = `Replace everything on this phone with the backup from ${when}? It has ${Array.isArray(res.obj.tx) ? res.obj.tx.length : 0} purchases.`;
     $('#importConfirm').hidden = false;
     msg.textContent = '';
     return;
@@ -1993,7 +2232,11 @@ function bindStatic() {
   $('#importClose').addEventListener('click', closeSheets);
   /* Welcome */
   $('#wlImport').addEventListener('click', openImport);
-  $('#wlFresh').addEventListener('click', () => { state.plan = normalize(defaults()); state.tx = []; state.month = currentPeriod(); state.tab = 'plan'; writeStore(); render(); toast('Empty plan ready. Start with your net salary.'); });
+  $('#wlSetup').addEventListener('click', () => { state.setup = newSetup(); render(); });
+  /* Setup */
+  $('#suNext').addEventListener('click', setupNext);
+  $('#suBack').addEventListener('click', setupBack);
+  $('#suCancel').addEventListener('click', () => { state.setup = null; render(); window.scrollTo({ top: 0 }); });
   /* Settings */
   $('#rateInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); $('#rateInput').blur(); } });
   $('#rateInput').addEventListener('change', () => {

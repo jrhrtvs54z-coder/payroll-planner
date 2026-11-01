@@ -1,5 +1,24 @@
 # Payroll Planner
 
-A personal salary-split and spending app for iPhone. Open it in Safari, then Share → Add to Home Screen.
+Plan your monthly salary, track what you spend, and watch your savings grow — on your phone.
 
-All data is stored on the device only (no server, no accounts). Use Settings → Back up now to save a copy.
+**Open it:** https://jrhrtvs54z-coder.github.io/payroll-planner/
+
+## Install
+
+- **iPhone:** open the link in Safari → Share → Add to Home Screen → Add. Then open Payroll from your home screen.
+- **Android:** open the link in Chrome → ⋮ → Add to Home screen (or Install app).
+
+The first time you open it, a one-minute setup asks for your salary, fixed costs, savings and spending money.
+
+## Privacy
+
+There's no account and no server. Everything you enter is stored only on your phone, inside the app.
+Removing the app from your home screen deletes that data, so use **Settings → Back up now** once a month.
+
+## Rules the planner follows
+
+- Raises go straight to leftover.
+- Any increase comes out of leftover, so the plan never spends more than you earn.
+
+Payroll Planner helps you plan. It isn't financial advice.
