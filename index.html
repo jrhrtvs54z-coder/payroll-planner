@@ -219,9 +219,22 @@ svg { display: block; }
 .set-label { display: grid; gap: 2px; min-width: 0; }
 .set-label b { font-size: 15px; }
 .set-label span { font-size: 12.5px; color: var(--muted); }
-.cat-chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.cat-chip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px 5px 7px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--line); font-size: 13px; }
-.cat-chip svg { width: 15px; height: 15px; color: var(--ink-2); }
+.cat-rows { display: grid; }
+.cat-row { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto 16px; gap: 12px; align-items: center; width: 100%; border: 0; border-top: 1px solid var(--line); background: transparent; padding: 9px 0; text-align: left; color: var(--ink); }
+.cat-row:first-child { border-top: 0; }
+.cat-row .cat-ic { width: 34px; height: 34px; }
+.cat-row .cat-ic svg { width: 19px; height: 19px; }
+.cat-row-name { font-size: 15px; font-weight: 600; overflow-wrap: anywhere; }
+.cat-row-meta { font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+.cat-row .chev { color: var(--muted); }
+.cat-row .chev svg { width: 16px; height: 16px; }
+.icon-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
+.icon-pick { aspect-ratio: 1; border-radius: 12px; border: 1px solid var(--line); background: var(--surface-2); display: grid; place-items: center; color: var(--ink); min-width: 0; }
+.icon-pick svg { width: 22px; height: 22px; }
+.icon-pick[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.move-row { display: flex; gap: 8px; }
+.move-row .btn { flex: 1; }
+.btn:disabled { opacity: .4; }
 .st-hero { display: grid; gap: 6px; padding-top: 2px; }
 
 /* Welcome */
@@ -474,9 +487,9 @@ svg { display: block; }
           <p class="hint">Import a backup, or a file of purchases or categories that Claude makes from your statements.</p>
         </section>
         <section class="card" aria-labelledby="catsTitle">
-          <h2 class="card-title" id="catsTitle">Categories</h2>
-          <div class="cat-chips" id="catChips"></div>
-          <p class="hint">To change categories, ask Claude. It sends you a file to import here.</p>
+          <div class="card-head"><h2 class="card-title" id="catsTitle">Categories</h2><button class="link-btn" type="button" id="addCategory">Add category</button></div>
+          <div class="cat-rows" id="catRows"></div>
+          <p class="hint">Tap a category to rename it, change its icon, move it or delete it. This order is the order on the add screen.</p>
         </section>
         <section class="card" aria-labelledby="aboutTitle">
           <h2 class="card-title" id="aboutTitle">About</h2>
@@ -573,12 +586,32 @@ svg { display: block; }
   <button class="btn ghost" type="button" id="importClose">Close</button>
 </div>
 
+<!-- Edit a category -->
+<div class="sheet" id="catSheet" role="dialog" aria-modal="true" aria-labelledby="catSheetTitle" hidden>
+  <div class="grip" aria-hidden="true"></div>
+  <h2 class="sheet-title" id="catSheetTitle">Edit category</h2>
+  <form class="form" id="catForm" novalidate>
+    <div class="field"><label for="cName">Name</label><input id="cName" type="text" maxlength="30" autocomplete="off"></div>
+    <div class="field"><label for="cShort">Short name</label><input id="cShort" type="text" maxlength="10" autocomplete="off"><p class="hint">Shown under the icon on the add screen. Up to 10 letters.</p></div>
+    <div class="field"><span class="lbl" id="cIconL">Icon</span><div class="icon-grid" id="cIcons" role="group" aria-labelledby="cIconL"></div></div>
+    <div class="move-row" id="cMove"><button class="btn" type="button" id="cUp">Move up</button><button class="btn" type="button" id="cDown">Move down</button></div>
+    <div class="field" id="cReassignWrap"><label for="cReassign">If you delete it, move its purchases to</label><select id="cReassign"></select></div>
+    <p class="hint" id="cHint"></p>
+    <div class="sheet-actions">
+      <button type="button" class="btn danger" id="cDelete">Delete</button>
+      <span class="grow"></span>
+      <button type="button" class="btn ghost" id="cCancel">Cancel</button>
+      <button type="submit" class="btn primary">Save</button>
+    </div>
+  </form>
+</div>
+
 <div class="toast" id="toast" role="status" aria-live="polite" hidden><span id="toastText"></span><button type="button" id="toastUndo" hidden>Undo</button></div>
 
 <script>
 (() => {
 'use strict';
-const APP_VERSION = '1.0.0';
+const APP_VERSION = '1.1.0';
 const STORE_KEY = 'payroll-planner/v1';
 const DEFAULT_CATS = ['Dining out', 'Delivery apps', 'Groceries', 'Coffee', 'Duty-day food', 'Fuel', 'Car care & wash', 'Internet & subscriptions', 'Laundry', 'قطيات شهرية', 'Grooming & barber', 'Gadgets & electronics', 'Health & gym', 'Entertainment', 'Friends & outings', 'Outdoor & camping', 'Charity & gifts', 'Other'];
 
@@ -789,7 +822,19 @@ const ICONS = {
   alert: '<path d="M12 8v5"/><path d="M12 16h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/>',
   up: '<path d="M12 19V5"/><path d="m5 12 7-7 7 7"/>',
   check: '<path d="M20 6 9 17l-5-5"/>',
+  bus: '<rect x="4" y="3" width="16" height="15" rx="2"/><path d="M4 11h16"/><path d="M8 18v3"/><path d="M16 18v3"/><path d="M8 14.5h.01"/><path d="M16 14.5h.01"/>',
+  cross: '<rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8"/><path d="M8 12h8"/>',
+  heart: '<path d="M19 14c1.5-1.5 3-3.3 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7z"/>',
+  gamepad: '<rect x="2" y="7" width="20" height="11" rx="4"/><path d="M7 11v3"/><path d="M5.5 12.5h3"/><path d="M15 12h.01"/><path d="M18 13.5h.01"/>',
+  bag: '<path d="M6 7h12l1 14H5z"/><path d="M9 7V5.5a3 3 0 0 1 6 0V7"/>',
+  card: '<rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M2.5 10h19"/><path d="M6 15h3"/>',
+  home: '<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1V9.5"/>',
+  book: '<path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>',
+  wrench: '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>',
+  droplet: '<path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z"/>',
 };
+const ICON_CHOICES = ['dining', 'delivery', 'groceries', 'coffee', 'duty', 'fuel', 'car', 'bus', 'wifi', 'shirt', 'coins', 'scissors', 'phone', 'dumbbell', 'cross', 'heart', 'ticket', 'gamepad', 'friends', 'tent', 'gift', 'bag', 'card', 'home', 'book', 'wrench', 'droplet', 'tag', 'other'];
+const ICON_NAMES = { dining: 'Fork and knife', delivery: 'Delivery bag', groceries: 'Cart', coffee: 'Coffee', duty: 'Plane', fuel: 'Fuel pump', car: 'Car', bus: 'Bus', wifi: 'Wi-Fi', shirt: 'Shirt', coins: 'Coins', scissors: 'Scissors', phone: 'Phone', dumbbell: 'Dumbbell', cross: 'Medical', heart: 'Heart', ticket: 'Ticket', gamepad: 'Game controller', friends: 'People', tent: 'Tent', gift: 'Gift', bag: 'Shopping bag', card: 'Card', home: 'House', book: 'Book', wrench: 'Wrench', droplet: 'Water', tag: 'Tag', other: 'More' };
 const CAT_META = {
   'Dining out': ['Dining', 'dining'], 'Delivery apps': ['Delivery', 'delivery'], 'Groceries': ['Groceries', 'groceries'], 'Coffee': ['Coffee', 'coffee'],
   'Duty-day food': ['Duty food', 'duty'], 'Fuel': ['Fuel', 'fuel'], 'Car care & wash': ['Car care', 'car'], 'Internet & subscriptions': ['Internet', 'wifi'],
@@ -797,8 +842,16 @@ const CAT_META = {
   'Health & gym': ['Health', 'dumbbell'], 'Entertainment': ['Fun', 'ticket'], 'Friends & outings': ['Friends', 'friends'], 'Outdoor & camping': ['Outdoor', 'tent'],
   'Charity & gifts': ['Charity', 'gift'], 'Other': ['Other', 'other'],
 };
-const catShort = (c) => (CAT_META[c] ? CAT_META[c][0] : String(c || 'Other').split(/\s*[&,]\s*|\s+/)[0]);
-const catIcon = (c) => (CAT_META[c] ? CAT_META[c][1] : 'tag');
+const defaultShort = (c) => (CAT_META[c] ? CAT_META[c][0] : String(c || 'Other').split(/\s*[&,]\s*|\s+/)[0]);
+function catShort(c) {
+  const st = state.plan && state.plan.settings;
+  return (st && st.catShort && st.catShort[c]) || defaultShort(c);
+}
+function catIcon(c) {
+  const st = state.plan && state.plan.settings;
+  const k = st && st.catIcons && st.catIcons[c];
+  return k && ICONS[k] ? k : (CAT_META[c] ? CAT_META[c][1] : 'tag');
+}
 function icon(name) {
   const el = document.createElementNS(SVGNS, 'svg');
   el.setAttribute('viewBox', '0 0 24 24'); el.setAttribute('fill', 'none'); el.setAttribute('stroke', 'currentColor');
@@ -897,6 +950,7 @@ function normalize(raw) {
   p.settings.usdRate = Number(p.settings.usdRate) > 0 ? Number(p.settings.usdRate) : d.settings.usdRate;
   if (!/^\d{4}-\d{2}$/.test(p.settings.startMonth || '')) p.settings.startMonth = d.settings.startMonth;
   if (!Array.isArray(p.settings.categories) || !p.settings.categories.length) p.settings.categories = DEFAULT_CATS.slice();
+  ['catIcons', 'catShort'].forEach((k) => { if (!p.settings[k] || typeof p.settings[k] !== 'object' || Array.isArray(p.settings[k])) p.settings[k] = {}; });
   p.income = (Array.isArray(p.income) && p.income.length ? p.income : d.income).map((i) => ({ start: '', end: '', ...i, amount: Number(i.amount) || 0 }));
   p.lines = (Array.isArray(p.lines) ? p.lines : d.lines).map((l) => ({ currency: 'KWD', per: 'month', start: '', end: '', note: '', ...l, amount: Number(l.amount) || 0, group: GROUP_KEYS.includes(l.group) ? l.group : 'Obligations' }));
   if (!p.lines.some((l) => l.id === p.settings.personalLineId)) { const pl = p.lines.find((l) => /personal/i.test(l.name || '')); p.settings.personalLineId = pl ? pl.id : ''; }
@@ -1425,8 +1479,13 @@ function renderSettings() {
   const lb = state.meta.lastBackup;
   const days = lb ? Math.round((dateFromIso(todayIso()) - dateFromIso(lb)) / 86400000) : null;
   $('#stBackupNote').textContent = lb ? `Last backup ${longDate(lb)}${days > 0 ? `, ${days} day${days === 1 ? '' : 's'} ago` : ', today'}.${days > 31 ? ' Time for a new one.' : ''}` : 'No backup yet. Back up once a month so you can restore your data.';
-  const chips = $('#catChips');
-  chips.replaceChildren(...st.categories.map((c) => h('span', { class: 'cat-chip' }, icon(catIcon(c)), h('span', { text: c }))));
+  const counts = {};
+  state.tx.forEach((t) => { counts[t.category] = (counts[t.category] || 0) + 1; });
+  $('#catRows').replaceChildren(...st.categories.map((c, i) => h('button', { class: 'cat-row', type: 'button', onclick: () => openCat(i), 'aria-label': `${c}${counts[c] ? `, ${counts[c]} purchases` : ''}. Edit` },
+    h('span', { class: 'cat-ic' }, icon(catIcon(c))),
+    h('span', { class: 'cat-row-name', text: c }),
+    h('span', { class: 'cat-row-meta', text: counts[c] ? String(counts[c]) : '' }),
+    h('span', { class: 'chev' }, icon('fwd')))));
   $('#aboutText').textContent = `Payroll Planner ${APP_VERSION}. ${state.plan.lines.length} plan lines, ${state.tx.length} purchases and ${state.plan.balances.length} accounts stored on this iPhone. Nothing is sent anywhere.`;
 }
 const ordinal = (n) => { const v = n % 100; const suf = (v >= 11 && v <= 13) ? 'th' : ({ 1: 'st', 2: 'nd', 3: 'rd' }[n % 10] || 'th'); return `${n}${suf}`; };
@@ -1669,6 +1728,94 @@ function deleteEdit() {
   toast(msg, () => { state.plan[listName].splice(idx, 0, removed); saveSoon(); render(); });
 }
 
+/* Categories: add, rename, change icon, reorder, delete */
+function setCatHint(text, tone) { const el = $('#cHint'); el.textContent = text; el.dataset.tone = tone || ''; }
+function renderCatIcons() {
+  $('#cIcons').replaceChildren(...ICON_CHOICES.map((k) => h('button', { class: 'icon-pick', type: 'button', 'aria-pressed': String(state.cat.icon === k), 'aria-label': ICON_NAMES[k] || k, onclick: () => { state.cat.icon = k; renderCatIcons(); } }, icon(k))));
+}
+function catUsage(name) { return state.tx.filter((t) => t.category === name).length; }
+function syncCatMove() {
+  const cats = state.plan.settings.categories;
+  const i = state.cat ? state.cat.idx : null;
+  $('#cUp').disabled = i == null || i <= 0;
+  $('#cDown').disabled = i == null || i >= cats.length - 1;
+}
+function openCat(idx) {
+  const cats = state.plan.settings.categories;
+  const isNew = idx == null;
+  const name = isNew ? '' : cats[idx];
+  const used = isNew ? 0 : catUsage(name);
+  state.cat = { idx: isNew ? null : idx, original: name, icon: isNew ? 'tag' : catIcon(name), armed: false };
+  $('#catSheetTitle').textContent = isNew ? 'Add category' : 'Edit category';
+  $('#cName').value = name;
+  $('#cName').placeholder = 'e.g. Talabat';
+  $('#cShort').value = isNew ? '' : catShort(name);
+  $('#cMove').hidden = isNew;
+  const del = $('#cDelete');
+  del.hidden = isNew || cats.length <= 1;
+  del.textContent = 'Delete';
+  $('#cReassignWrap').hidden = isNew || used === 0;
+  if (!isNew && used) {
+    const others = cats.filter((c) => c !== name);
+    $('#cReassign').replaceChildren(...others.map((c) => h('option', { value: c, text: c })));
+    $('#cReassign').value = others.includes('Other') ? 'Other' : others[0];
+  }
+  renderCatIcons();
+  syncCatMove();
+  setCatHint(isNew ? 'New categories go to the end of the list.' : `Position ${idx + 1} of ${cats.length}${used ? ` · used by ${used} purchase${used === 1 ? '' : 's'}. Renaming moves them with it.` : '.'}`);
+  showSheet('#catSheet');
+}
+function saveCat() {
+  const cs = state.cat; if (!cs) return;
+  const st = state.plan.settings;
+  const name = $('#cName').value.trim().replace(/\s+/g, ' ').slice(0, 30);
+  if (!name) { setCatHint('Give the category a name.', 'bad'); $('#cName').focus(); return; }
+  const clash = st.categories.find((c, i) => c.toLowerCase() === name.toLowerCase() && i !== cs.idx);
+  if (clash) { setCatHint(`There’s already a category called ${clash}.`, 'bad'); $('#cName').focus(); return; }
+  const short = $('#cShort').value.trim().slice(0, 10);
+  const beforePlan = clone(state.plan); const beforeTx = clone(state.tx);
+  let moved = 0;
+  if (cs.idx == null) st.categories.push(name);
+  else {
+    const old = st.categories[cs.idx];
+    st.categories[cs.idx] = name;
+    if (old !== name) {
+      state.tx.forEach((t) => { if (t.category === old) { t.category = name; moved++; } });
+      delete st.catIcons[old]; delete st.catShort[old];
+    }
+  }
+  st.catIcons[name] = cs.icon;
+  if (short && short !== defaultShort(name)) st.catShort[name] = short; else delete st.catShort[name];
+  closeSheets(); writeStore(); render();
+  const msg = cs.idx == null ? `Added ${name}.` : moved ? `Renamed to ${name}. ${moved} purchase${moved === 1 ? '' : 's'} moved with it.` : `Saved ${name}.`;
+  toast(msg, () => { state.plan = beforePlan; state.tx = beforeTx; writeStore(); render(); });
+}
+function moveCat(dir) {
+  const cs = state.cat; if (!cs || cs.idx == null) return;
+  const cats = state.plan.settings.categories;
+  const j = cs.idx + dir;
+  if (j < 0 || j >= cats.length) return;
+  [cats[cs.idx], cats[j]] = [cats[j], cats[cs.idx]];
+  cs.idx = j;
+  writeStore(); renderSettings(); syncCatMove();
+  setCatHint(`Position ${j + 1} of ${cats.length}.`);
+}
+function deleteCat() {
+  const cs = state.cat; if (!cs || cs.idx == null) return;
+  const st = state.plan.settings;
+  if (st.categories.length <= 1) return;
+  if (!cs.armed) { cs.armed = true; $('#cDelete').textContent = 'Tap again to delete'; return; }
+  const name = st.categories[cs.idx];
+  const target = $('#cReassignWrap').hidden ? null : $('#cReassign').value;
+  const beforePlan = clone(state.plan); const beforeTx = clone(state.tx);
+  st.categories.splice(cs.idx, 1);
+  delete st.catIcons[name]; delete st.catShort[name];
+  let moved = 0;
+  if (target) state.tx.forEach((t) => { if (t.category === name) { t.category = target; moved++; } });
+  closeSheets(); writeStore(); render();
+  toast(`Deleted ${name}.${moved ? ` ${moved} purchase${moved === 1 ? '' : 's'} moved to ${target}.` : ''}`, () => { state.plan = beforePlan; state.tx = beforeTx; writeStore(); render(); });
+}
+
 /* Backup and import */
 async function exportBackup() {
   writeStore();
@@ -1767,13 +1914,14 @@ function showSheet(sel) {
 function closeSheets() {
   $$('.sheet').forEach((el) => { el.hidden = true; });
   $('#scrim').hidden = true;
-  state.edit = null; state.add = null; state.pendingImport = null;
+  state.edit = null; state.add = null; state.pendingImport = null; state.cat = null;
   if (lastFocus && document.contains(lastFocus)) { try { lastFocus.focus({ preventScroll: true }); } catch (e) { /* ignore */ } }
 }
-function toast(text, undo) {
+function toast(text, undo, label) {
   const el = $('#toast');
   $('#toastText').textContent = text;
   $('#toastUndo').hidden = !undo;
+  $('#toastUndo').textContent = label || 'Undo';
   state.undo = undo || null;
   el.hidden = false;
   clearTimeout(state.toastTimer);
@@ -1850,6 +1998,13 @@ function bindStatic() {
   $('#backupBtn').addEventListener('click', exportBackup);
   $('#importBtn').addEventListener('click', openImport);
   $('#addBalance').addEventListener('click', () => openEdit('balance', null));
+  /* Categories */
+  $('#addCategory').addEventListener('click', () => openCat(null));
+  $('#catForm').addEventListener('submit', (e) => { e.preventDefault(); saveCat(); });
+  $('#cCancel').addEventListener('click', closeSheets);
+  $('#cUp').addEventListener('click', () => moveCat(-1));
+  $('#cDown').addEventListener('click', () => moveCat(1));
+  $('#cDelete').addEventListener('click', deleteCat);
   $('#eraseBtn').addEventListener('click', () => {
     const b = $('#eraseBtn');
     if (!b.dataset.armed) { b.dataset.armed = '1'; b.textContent = 'Tap again to erase everything'; setTimeout(() => { b.dataset.armed = ''; b.textContent = 'Erase all data'; }, 5000); return; }
@@ -1890,7 +2045,13 @@ function boot() {
     state.month = currentPeriod();
   }
   render();
-  if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('./sw.js').catch(() => {});
+  if ('serviceWorker' in navigator && location.protocol === 'https:') {
+    const hadController = !!navigator.serviceWorker.controller;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (hadController) toast('A new version of the app is ready.', () => { writeStore(); location.reload(); }, 'Reload');
+    });
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  }
 }
 boot();
 })();

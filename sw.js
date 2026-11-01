@@ -1,10 +1,10 @@
 /* Payroll Planner offline support: the app shell is served from cache and refreshed in the background. */
-const VERSION = 'pp-1.0.0';
+const VERSION = 'pp-1.1.0';
 const FONTS = 'pp-fonts';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icons/apple-touch-icon.png', './icons/icon-192.png', './icons/icon-512.png'];
 
 self.addEventListener('install', (event) => {
-  event.waitUntil(caches.open(VERSION).then((cache) => cache.addAll(SHELL)).then(() => self.skipWaiting()));
+  event.waitUntil(caches.open(VERSION).then((cache) => cache.addAll(SHELL.map((u) => new Request(u, { cache: 'reload' })))).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', (event) => {
