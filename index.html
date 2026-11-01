@@ -16,7 +16,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
 <style>
 /* Layout: iPhone-first. A dark band carries the status bar, title and each tab's headline; light cards below; a tab bar with a centre add button. */
 :root {
@@ -28,9 +28,9 @@
   --h1: #9085e9; --h2: #d95926; --h3: #3987e5; --h4: #008300; --h5: #d55181; --h6: #c98500; --h7: #199e70;
   --grid: #e4e9e6; --scrim: rgba(10, 16, 14, .45);
   --shadow: 0 1px 2px rgba(17, 26, 23, .06), 0 12px 32px rgba(17, 26, 23, .14);
-  --font-display: "Archivo", "Arial Narrow", Arial, system-ui, sans-serif;
-  --font-body: "Archivo", system-ui, -apple-system, "Segoe UI", "Geeza Pro", sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --font-display: "Archivo", "IBM Plex Sans Arabic", "Arial Narrow", Arial, system-ui, sans-serif;
+  --font-body: "Archivo", "IBM Plex Sans Arabic", system-ui, -apple-system, "Segoe UI", "Geeza Pro", sans-serif;
+  --font-mono: "IBM Plex Mono", "IBM Plex Sans Arabic", ui-monospace, Menlo, monospace;
   --r: 18px; --r-sm: 12px; --tabbar-h: 60px;
   color-scheme: light;
 }
@@ -67,7 +67,7 @@ svg { display: block; }
 .appbar { position: sticky; top: 0; z-index: 20; background: var(--band); color: var(--band-ink); padding-top: env(safe-area-inset-top, 0px); }
 .appbar-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 54px; }
 .appbar-title { margin: 0; font-family: var(--font-display); font-stretch: 114%; font-weight: 700; font-size: 25px; letter-spacing: -.01em; }
-.status { font-size: 12px; color: var(--band-bad); max-width: 55%; text-align: right; }
+.status { font-size: 12px; color: var(--band-bad); max-width: 55%; text-align: end; }
 .period { display: flex; align-items: center; gap: 4px; }
 .pbtn { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--band-line); background: transparent; color: var(--band-ink); display: grid; place-items: center; }
 .pbtn:disabled { opacity: .3; }
@@ -105,7 +105,7 @@ svg { display: block; }
 .big { font-family: var(--font-display); font-stretch: 122%; font-weight: 650; font-size: clamp(42px, 13vw, 58px); line-height: 1; letter-spacing: -.02em; margin-top: 6px; }
 .big[data-neg="true"] { color: var(--band-bad); }
 .bmeter { position: relative; height: 12px; border-radius: 999px; background: var(--band-track); overflow: hidden; }
-.bmeter .fill { position: absolute; inset: 0 auto 0 0; border-radius: 999px; background: var(--h5); transition: width .45s cubic-bezier(.2, .7, .2, 1); }
+.bmeter .fill { position: absolute; inset-block: 0; inset-inline-start: 0; border-radius: 999px; background: var(--h5); transition: width .45s cubic-bezier(.2, .7, .2, 1); }
 .bmeter[data-over="true"] .fill { background: var(--band-bad); }
 .bmeter .pace { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--band-ink); opacity: .85; }
 
@@ -130,7 +130,7 @@ svg { display: block; }
 .band .step:active { background: var(--band-line); }
 .amt-input { width: 6.4ch; border: 0; background: transparent; text-align: center; font-variant-numeric: tabular-nums; font-weight: 650; font-size: 16px; padding: 4px 0; color: inherit; }
 .band .amt-input { font-family: var(--font-display); font-stretch: 112%; font-size: 20px; width: 6ch; }
-.amt-unit { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); padding-right: 6px; }
+.amt-unit { font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); padding-inline-end: 6px; }
 .band .amt-unit { color: var(--band-muted); }
 
 /* Ledger */
@@ -140,11 +140,11 @@ svg { display: block; }
 .sw { width: 10px; height: 10px; border-radius: 3px; flex: none; display: inline-block; }
 .grp-name { font-weight: 700; font-size: 14.5px; flex: 1; min-width: 0; }
 .grp-total { font-variant-numeric: tabular-nums; font-weight: 650; font-size: 14px; }
-.grp-pct { font-family: var(--font-mono); font-size: 11px; color: var(--muted); width: 3rem; text-align: right; }
-.row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 7px 0 7px 20px; }
+.grp-pct { font-family: var(--font-mono); font-size: 11px; color: var(--muted); width: 3rem; text-align: end; }
+.row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; padding-block: 7px; padding-inline: 20px 0; }
 .row[data-off="true"] .row-name, .row[data-off="true"] .amt { opacity: .5; }
 .row-main { display: grid; gap: 3px; min-width: 0; justify-items: start; }
-.row-name, .bal-name, .bill-name { border: 0; background: none; padding: 0; text-align: left; font-size: 14.5px; color: var(--ink); text-decoration: underline; text-decoration-color: var(--line-2); text-underline-offset: 3px; overflow-wrap: anywhere; }
+.row-name, .bal-name, .bill-name { border: 0; background: none; padding: 0; text-align: start; font-size: 14.5px; color: var(--ink); text-decoration: underline; text-decoration-color: var(--line-2); text-underline-offset: 3px; overflow-wrap: anywhere; }
 .chips { display: flex; flex-wrap: wrap; gap: 4px; }
 .chip { font-family: var(--font-mono); font-size: 10.5px; padding: 1px 6px; border-radius: 6px; background: var(--surface-2); color: var(--ink-2); border: 1px solid var(--line); white-space: nowrap; }
 .chip.warn { background: var(--warn-soft); color: var(--warn-ink); border-color: transparent; }
@@ -152,7 +152,7 @@ svg { display: block; }
 .chip.bad { background: var(--bad-soft); color: var(--bad); border-color: transparent; }
 .row-side { display: grid; justify-items: end; gap: 2px; }
 .conv { font-size: 11.5px; color: var(--muted); }
-.add-line { justify-self: start; margin-left: 14px; font-size: 13px; }
+.add-line { justify-self: start; margin-inline-start: 14px; font-size: 13px; }
 .leftover-row { margin-top: 8px; border-radius: var(--r-sm); background: var(--accent-soft); padding: 12px 14px; display: grid; gap: 4px; }
 .leftover-row[data-neg="true"] { background: var(--bad-soft); }
 .leftover-line { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
@@ -181,10 +181,10 @@ svg { display: block; }
 .cat-ic svg { width: 17px; height: 17px; }
 .cat-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .cat-track { height: 8px; border-radius: 999px; background: var(--grid); position: relative; overflow: hidden; }
-.cat-fill { position: absolute; inset: 0 auto 0 0; border-radius: 999px; background: var(--g5); }
+.cat-fill { position: absolute; inset-block: 0; inset-inline-start: 0; border-radius: 999px; background: var(--g5); }
 .cat-v { font-variant-numeric: tabular-nums; font-weight: 650; }
 .tx-day { font-family: var(--font-mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding-top: 8px; display: flex; justify-content: space-between; gap: 10px; }
-.tx { display: grid; grid-template-columns: 38px minmax(0, 1fr) auto; gap: 12px; align-items: center; width: 100%; border: 0; border-top: 1px solid var(--line); background: transparent; padding: 10px 0; text-align: left; color: var(--ink); }
+.tx { display: grid; grid-template-columns: 38px minmax(0, 1fr) auto; gap: 12px; align-items: center; width: 100%; border: 0; border-top: 1px solid var(--line); background: transparent; padding: 10px 0; text-align: start; color: var(--ink); }
 .tx-ic { width: 38px; height: 38px; border-radius: 12px; }
 .tx-ic svg { width: 20px; height: 20px; }
 .tx-title { display: block; font-size: 15px; font-weight: 600; overflow-wrap: anywhere; }
@@ -199,7 +199,7 @@ svg { display: block; }
 .cover-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
 .cover-big { font-family: var(--font-display); font-stretch: 112%; font-weight: 700; font-size: 26px; }
 .meter { position: relative; height: 10px; border-radius: 999px; background: var(--grid); overflow: hidden; }
-.meter .fill { position: absolute; inset: 0 auto 0 0; border-radius: 999px; background: var(--g4); transition: width .45s cubic-bezier(.2, .7, .2, 1); }
+.meter .fill { position: absolute; inset-block: 0; inset-inline-start: 0; border-radius: 999px; background: var(--g4); transition: width .45s cubic-bezier(.2, .7, .2, 1); }
 .meter .mark { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--surface); }
 .meter-labels { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 10.5px; color: var(--muted); }
 .bill { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 3px 10px; align-items: center; padding-block: 10px; border-top: 1px solid var(--line); }
@@ -220,7 +220,7 @@ svg { display: block; }
 .set-label b { font-size: 15px; }
 .set-label span { font-size: 12.5px; color: var(--muted); }
 .cat-rows { display: grid; }
-.cat-row { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto 16px; gap: 12px; align-items: center; width: 100%; border: 0; border-top: 1px solid var(--line); background: transparent; padding: 9px 0; text-align: left; color: var(--ink); }
+.cat-row { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto 16px; gap: 12px; align-items: center; width: 100%; border: 0; border-top: 1px solid var(--line); background: transparent; padding: 9px 0; text-align: start; color: var(--ink); }
 .cat-row:first-child { border-top: 0; }
 .cat-row .cat-ic { width: 34px; height: 34px; }
 .cat-row .cat-ic svg { width: 19px; height: 19px; }
@@ -243,7 +243,7 @@ svg { display: block; }
 .wl-mark { width: 60px; height: 60px; border-radius: 15px; background: #0f1916; display: grid; place-items: center; box-shadow: 0 0 0 1px var(--band-line); }
 .wl-mark svg { width: 44px; height: 44px; }
 .wl-title { margin: 0; font-family: var(--font-display); font-stretch: 116%; font-weight: 700; font-size: 30px; letter-spacing: -.02em; }
-.steps { margin: 0; padding-left: 1.25rem; display: grid; gap: 6px; font-size: 14.5px; color: var(--ink-2); }
+.steps { margin: 0; padding-inline-start: 1.25rem; display: grid; gap: 6px; font-size: 14.5px; color: var(--ink-2); }
 .steps b { color: var(--ink); }
 .welcome .content { padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 30px); }
 
@@ -364,13 +364,37 @@ svg { display: block; }
 .toast span { flex: 1; }
 .toast button { border: 0; background: none; color: var(--bg); font-weight: 750; text-decoration: underline; padding: 4px; }
 @media (prefers-reduced-motion: reduce) { .seg, .meter .fill, .bmeter .fill { transition: none; } }
+
+/* Language: English or Arabic (right to left). Numbers keep Western digits and left-to-right order. */
+.wl-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; justify-self: stretch; }
+.lang-toggle { display: inline-flex; border: 1px solid var(--line-2); border-radius: 999px; padding: 2px; background: var(--surface-2); flex: none; }
+.lang-toggle button { border: 0; background: transparent; min-height: 38px; padding: 0 14px; border-radius: 999px; font-size: 14px; font-weight: 650; color: var(--ink-2); }
+.lang-toggle button[data-lang="ar"] { font-family: "IBM Plex Sans Arabic", "Geeza Pro", var(--font-body); }
+.lang-toggle button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgba(0, 0, 0, .12); }
+.band .lang-toggle { border-color: var(--band-line); background: var(--band-track); }
+.band .lang-toggle button { color: var(--band-muted); }
+.band .lang-toggle button[aria-pressed="true"] { background: var(--band-ink); color: var(--band); }
+.amount, .keypad, input[inputmode="decimal"], #importText { direction: ltr; }
+.chart svg { direction: ltr; }
+[dir="rtl"] .amount .a-unit { order: -1; margin-left: 0; margin-right: 8px; }
+[dir="rtl"] .su-input.big, [dir="rtl"] .field input[inputmode="decimal"] { text-align: right; }
+[dir="rtl"] .pbtn svg, [dir="rtl"] .chev svg { transform: scaleX(-1); }
+[dir="rtl"] .chart text { direction: rtl; }
+[dir="rtl"] .chart text[text-anchor="start"] { text-anchor: end; }
+[dir="rtl"] .chart text[text-anchor="end"] { text-anchor: start; }
+:lang(ar) .eyebrow, :lang(ar) .tx-day, :lang(ar) .appbar-title, :lang(ar) .wl-title, :lang(ar) .card-title, :lang(ar) .money .unit, :lang(ar) .amount .a-unit { letter-spacing: 0; }
+:lang(ar) .eyebrow, :lang(ar) .prange, :lang(ar) .chip, :lang(ar) .tab-btn, :lang(ar) .cat-tile span, :lang(ar) .meter-labels, :lang(ar) .amt-unit { font-size: 11.5px; }
+:lang(ar) .tx-day { font-size: 12px; }
+:lang(ar) .eyebrow, :lang(ar) .prange, :lang(ar) .tick, :lang(ar) .chip, :lang(ar) .tx-day, :lang(ar) .grp-pct, :lang(ar) .amt-unit, :lang(ar) .meter-labels, :lang(ar) .coming .when, :lang(ar) .amount .a-unit { font-family: var(--font-body); }
+:lang(ar) .tick { font-size: 11px; }
 </style>
 </head>
 <body>
 
 <div id="welcome" class="welcome" hidden>
   <div class="band"><div class="gutter"><div class="inner wl-top">
-    <div class="wl-mark" aria-hidden="true"><svg viewBox="0 0 48 48"><g transform="rotate(-90 24 24)" fill="none" stroke-width="7"><circle cx="24" cy="24" r="15" stroke="#22312c"/><circle cx="24" cy="24" r="15" stroke="#2fbf8b" stroke-dasharray="36 94.25"/><circle cx="24" cy="24" r="15" stroke="#3987e5" stroke-dasharray="20 94.25" stroke-dashoffset="-38.5"/><circle cx="24" cy="24" r="15" stroke="#9085e9" stroke-dasharray="16 94.25" stroke-dashoffset="-61"/><circle cx="24" cy="24" r="15" stroke="#d95926" stroke-dasharray="11 94.25" stroke-dashoffset="-79.5"/></g></svg></div>
+    <div class="wl-row"><div class="wl-mark" aria-hidden="true"><svg viewBox="0 0 48 48"><g transform="rotate(-90 24 24)" fill="none" stroke-width="7"><circle cx="24" cy="24" r="15" stroke="#22312c"/><circle cx="24" cy="24" r="15" stroke="#2fbf8b" stroke-dasharray="36 94.25"/><circle cx="24" cy="24" r="15" stroke="#3987e5" stroke-dasharray="20 94.25" stroke-dashoffset="-38.5"/><circle cx="24" cy="24" r="15" stroke="#9085e9" stroke-dasharray="16 94.25" stroke-dashoffset="-61"/><circle cx="24" cy="24" r="15" stroke="#d95926" stroke-dasharray="11 94.25" stroke-dashoffset="-79.5"/></g></svg></div>
+      <div class="lang-toggle" role="group" aria-label="Language"><button class="no-tr" type="button" data-lang="en" lang="en">English</button><button class="no-tr" type="button" data-lang="ar" lang="ar">العربية</button></div></div>
     <h1 class="wl-title">Payroll Planner</h1>
     <p class="band-note">Plan your salary, track what you spend and watch your savings grow. Everything stays on your phone.</p>
   </div></div></div>
@@ -378,14 +402,14 @@ svg { display: block; }
     <section class="card" id="installCard" hidden aria-labelledby="installTitle">
       <h2 class="card-title" id="installTitle">Install it first</h2>
       <ol class="steps" id="stepsIos" hidden>
-        <li>Tap the <b>Share</b> button in Safari.</li>
-        <li>Choose <b>Add to Home Screen</b>, then <b>Add</b>.</li>
-        <li>Open <b>Payroll</b> from your home screen and set it up there.</li>
+        <li data-i18n-html>Tap the <b>Share</b> button in Safari.</li>
+        <li data-i18n-html>Choose <b>Add to Home Screen</b>, then <b>Add</b>.</li>
+        <li data-i18n-html>Open <b>Payroll</b> from your home screen and set it up there.</li>
       </ol>
       <ol class="steps" id="stepsAndroid" hidden>
-        <li>Tap <b>⋮</b> at the top right of Chrome.</li>
-        <li>Choose <b>Add to Home screen</b> or <b>Install app</b>, then <b>Install</b>.</li>
-        <li>Open <b>Payroll</b> from your home screen.</li>
+        <li data-i18n-html>Tap <b>⋮</b> at the top right of Chrome.</li>
+        <li data-i18n-html>Choose <b>Add to Home screen</b> or <b>Install app</b>, then <b>Install</b>.</li>
+        <li data-i18n-html>Open <b>Payroll</b> from your home screen.</li>
       </ol>
       <p class="card-body" id="stepsDesktop" hidden>Open this page on your phone to install it like an app.</p>
       <p class="card-note" id="iosNote" hidden>On iPhone the installed app keeps its own storage, so anything you enter here in Safari won’t carry over.</p>
@@ -526,6 +550,10 @@ svg { display: block; }
         <p class="band-note" id="stBackupNote">—</p>
       </div></div></div>
       <div class="gutter"><div class="inner content">
+        <section class="card" aria-labelledby="langTitle">
+          <div class="set-row"><h2 class="card-title" id="langTitle">Language</h2><div class="lang-toggle" role="group" aria-labelledby="langTitle"><button class="no-tr" type="button" data-lang="en" lang="en">English</button><button class="no-tr" type="button" data-lang="ar" lang="ar">العربية</button></div></div>
+          <p class="hint">Changes the app’s words. Names you typed stay as you typed them, except common ones like Groceries.</p>
+        </section>
         <section class="card" aria-labelledby="moneyTitle">
           <h2 class="card-title" id="moneyTitle">Money</h2>
           <div class="set-row">
@@ -670,9 +698,344 @@ svg { display: block; }
 <script>
 (() => {
 'use strict';
-const APP_VERSION = '1.3.0';
+const APP_VERSION = '1.4.0';
 const STORE_KEY = 'payroll-planner/v1';
 const DEFAULT_CATS = ['Dining out', 'Delivery apps', 'Groceries', 'Coffee', 'Fuel', 'Car care', 'Bills & subscriptions', 'Shopping', 'Clothes', 'Health & gym', 'Grooming', 'Entertainment', 'Friends & outings', 'Travel', 'Gifts & charity', 'Other'];
+
+/* Language: English is written in the code; Arabic is applied on top by translating what the page shows. */
+const LANG_KEY = 'payroll-planner/lang';
+let LANG = (() => {
+  try { const s = localStorage.getItem(LANG_KEY); if (s === 'ar' || s === 'en') return s; } catch (e) { /* ignore */ }
+  return /^ar\b/i.test(navigator.language || '') ? 'ar' : 'en';
+})();
+const AR_DEFAULT_CATS = ['مطاعم', 'تطبيقات التوصيل', 'بقالة', 'قهوة', 'بنزين', 'السيارة', 'فواتير واشتراكات', 'التسوق', 'ملابس', 'صحة ورياضة', 'عناية شخصية', 'ترفيه', 'طلعات مع الربع', 'سفر', 'هدايا وصدقات', 'أخرى'];
+const AR = {
+  'Payroll Planner': 'مخطط الراتب', 'Spending': 'المصروف', 'Plan': 'الخطة', 'Accounts': 'الحسابات', 'Settings': 'الإعدادات', 'Sections': 'الأقسام',
+  'Add spending': 'إضافة مصروف', 'Pay period': 'فترة الراتب', 'Previous pay period': 'الفترة السابقة', 'Next pay period': 'الفترة التالية',
+  'Language': 'اللغة', 'Your own categories and plan names stay as you wrote them.': 'أسماء الفئات والبنود التي كتبتها تبقى كما هي.',
+  'Plan your salary, track what you spend and watch your savings grow. Everything stays on your phone.': 'خطّط لراتبك، وتابع مصاريفك، وراقب مدخراتك وهي تكبر. كل شيء يبقى على هاتفك.',
+  'Install it first': 'ثبّت التطبيق أولاً',
+  'Open this page on your phone to install it like an app.': 'افتح هذه الصفحة على هاتفك لتثبيتها كتطبيق.',
+  'On iPhone the installed app keeps its own storage, so anything you enter here in Safari won’t carry over.': 'في الآيفون يحتفظ التطبيق المثبّت ببياناته منفصلة، لذلك ما تُدخله هنا في Safari لن ينتقل إليه.',
+  'Get started': 'لنبدأ',
+  'Answer a few questions about your salary and where it goes. It takes about a minute, and you can change everything later.': 'أجب عن بضعة أسئلة عن راتبك وأين يذهب. يستغرق ذلك دقيقة تقريباً، ويمكنك تغيير كل شيء لاحقاً.',
+  'Set up my plan': 'أعدّ خطتي', 'I have a backup file': 'لدي ملف نسخة احتياطية',
+  'Your numbers stay on your phone. There’s no account and no server. Payroll Planner helps you plan; it isn’t financial advice.': 'أرقامك تبقى على هاتفك. لا يوجد حساب ولا خادم. مخطط الراتب يساعدك على التخطيط، وليس استشارة مالية.',
+  'Back': 'رجوع', 'Cancel': 'إلغاء', 'Left to assign': 'المتبقي للتوزيع', 'Next': 'التالي', 'Start using it': 'ابدأ الاستخدام',
+  'Your salary': 'راتبك', 'What lands in your account each month, after deductions?': 'كم يصل إلى حسابك كل شهر بعد الاستقطاعات؟',
+  'Fixed costs': 'المصاريف الثابتة', 'What goes out every month no matter what? Leave blank anything that doesn’t apply.': 'ما الذي يُدفع كل شهر مهما حدث؟ اترك فارغاً ما لا ينطبق عليك.',
+  'Saving and investing': 'الادخار والاستثمار', 'How much do you want to keep each month?': 'كم تريد أن تحتفظ به كل شهر؟',
+  'Spending money': 'مصروفك', 'How much do you spend day to day? The Spending tab tracks this.': 'كم تصرف في أيامك العادية؟ تبويب «المصروف» يتابع هذا المبلغ.',
+  'Your plan': 'خطتك', 'Here’s where your salary goes. You can change any of it later.': 'هذا توزيع راتبك، ويمكنك تغيير أي شيء لاحقاً.',
+  'Rent or housing': 'الإيجار أو السكن', 'Or what you give at home': 'أو ما تساهم به في البيت', 'Car loan or installments': 'قرض السيارة أو الأقساط',
+  'Phone, internet and subscriptions': 'الهاتف والإنترنت والاشتراكات', 'Family support': 'مساعدة الأهل', 'Money you send to family': 'ما ترسله لأهلك',
+  'Emergency fund': 'صندوق الطوارئ', 'Cash for surprises': 'نقد للمفاجآت', 'Savings': 'الادخار', 'For goals like a car or a trip': 'لأهداف مثل سيارة أو سفرة',
+  'Investing': 'الاستثمار', 'Money you won’t touch for years': 'مال لن تلمسه لسنوات', 'Personal spending': 'المصروف الشخصي',
+  'Food, fuel, coffee, outings': 'أكل وبنزين وقهوة وطلعات', 'Travel fund': 'صندوق السفر', 'Optional': 'اختياري', 'Shopping': 'التسوق',
+  'Name, e.g. Gym': 'الاسم، مثلاً: النادي', 'Name of the fixed cost': 'اسم المصروف الثابت', 'Fixed cost': 'مصروف ثابت',
+  'Net salary (KD)': 'صافي الراتب (د.ك)', 'Include regular allowances. You can add raises later.': 'أضف البدلات الثابتة. يمكنك إضافة الزيادات لاحقاً.',
+  'Payday': 'يوم الراتب', 'The day your salary usually arrives. Paid on the 29th to 31st? Pick the 28th.': 'اليوم الذي يصل فيه راتبك عادةً. إذا كان بين 29 و31 فاختر 28.',
+  'Earlier payday': 'يوم أبكر', 'Later payday': 'يوم أبعد', '+ Add another fixed cost': '+ إضافة مصروف ثابت آخر',
+  'Net salary': 'صافي الراتب', 'Leftover': 'المتبقي', 'Your plan is ready. Tap + whenever you spend.': 'خطتك جاهزة. اضغط + كلما صرفت.',
+  'Obligations': 'الالتزامات', 'Family': 'الأهل', 'Spending accounts': 'حسابات المصروف', 'Yearly costs': 'المصاريف السنوية', 'Income': 'الدخل',
+  'Left to spend': 'المتبقي للصرف', 'Spent': 'صرفت', 'Per day': 'لكل يوم', 'Share of the plan spent': 'نسبة المصروف من الخطة',
+  'Spending pace': 'وتيرة الصرف', 'Against an even pace': 'مقارنةً بوتيرة متساوية', 'By category': 'حسب الفئة', 'This pay period': 'هذه الفترة',
+  'Purchases': 'المشتريات', 'Add': 'إضافة', 'Closed': 'انتهت',
+  'Add a personal spending line to your plan to track your spending here.': 'أضف بند «المصروف الشخصي» إلى خطتك لتتابع مصروفك هنا.',
+  'How this pay period ended': 'كيف انتهت هذه الفترة', 'Spent exactly the plan.': 'صرفت الخطة بالضبط.',
+  'Categories appear once you log spending.': 'تظهر الفئات بعد أن تسجّل مصاريفك.', 'Nothing logged in this pay period yet.': 'لم تسجّل شيئاً في هذه الفترة بعد.',
+  'Tap + to add a purchase: type the amount, then tap a category.': 'اضغط + لإضافة عملية: اكتب المبلغ ثم اختر الفئة.',
+  'refund': 'استرجاع', 'Purchase': 'عملية شراء',
+  'How your salary is split': 'كيف يتوزع راتبك', 'KD this month': 'د.ك هذا الشهر', 'Kept': 'المحتفظ به', 'Invested': 'المستثمر',
+  'Raises go straight to leftover. Any increase comes out of leftover, so the plan never spends more than you earn.': 'الزيادات تذهب مباشرة إلى «المتبقي»، وأي زيادة في بند تُخصم منه، فلا تصرف الخطة أكثر من دخلك أبداً.',
+  'Tap a name for details': 'اضغط على الاسم للتفاصيل', 'Next 12 months': 'الأشهر الـ 12 القادمة', 'Tap a month to view it': 'اضغط على شهر لعرضه',
+  'Coming up': 'قادم', '+ Add a raise or allowance': '+ إضافة زيادة أو بدل',
+  'This month spends more than you earn. Lower a line to fix it.': 'هذا الشهر يصرف أكثر من دخلك. خفّض بنداً لإصلاح ذلك.',
+  'Raises land here. Any increase you make is taken from here first.': 'الزيادات تصل هنا، وأي زيادة تجريها تُؤخذ من هنا أولاً.',
+  'Salary split for each of the next 12 pay periods': 'توزيع الراتب لكل فترة من الفترات الـ 12 القادمة',
+  'KD a month': 'د.ك شهرياً', 'KD short this month': 'د.ك عجز هذا الشهر', 'estimate': 'تقديري', 'KD': 'د.ك', 'KD/yr': 'د.ك/سنة', 'USD': 'دولار', 'USD/yr': 'دولار/سنة',
+  'Total cash': 'إجمالي النقد', 'Emergency': 'الطوارئ', 'of essentials': 'من الأساسيات', 'Bills pot': 'حصالة الفواتير', 'with a balance': 'لها رصيد',
+  'Balances': 'الأرصدة', 'Add account': 'إضافة حساب', 'add due months': 'أضف شهور الاستحقاق', 'bills covered': 'الفواتير مغطاة',
+  'Add your emergency fund balance under Balances to see how many months it covers.': 'أضف رصيد صندوق الطوارئ في «الأرصدة» لترى كم شهراً يغطي.',
+  'Add your obligations, family and personal account to the plan to measure cover.': 'أضف التزاماتك ومساعدة الأهل ومصروفك الشخصي إلى الخطة لقياس التغطية.',
+  'Covers': 'يغطي', 'months of essentials': 'أشهر من الأساسيات', 'Yearly bills': 'الفواتير السنوية', 'Yearly bills pot': 'حصالة الفواتير السنوية',
+  'Set aside for these bills now': 'المخصص لهذه الفواتير الآن', 'Enter what’s set aside for these bills now': 'أدخل المبلغ المخصص لهذه الفواتير الآن',
+  'Add yearly costs to your plan to see them here.': 'أضف المصاريف السنوية إلى خطتك لتظهر هنا.', 'due this month': 'تستحق هذا الشهر', 'covered': 'مغطاة',
+  'No due month yet': 'لا يوجد شهر استحقاق', 'Set due month': 'حدّد شهر الاستحقاق',
+  'A bill marked short won’t be covered by its due date at the current set-aside. Raise the yearly line or top up the pot before then.': 'الفاتورة المعلّمة بالعجز لن تُغطى في موعدها بالمبلغ المخصص حالياً. ارفع البند السنوي أو زد رصيد الحصالة قبل ذلك.',
+  'Savings account': 'حساب التوفير', 'Personal account': 'الحساب الشخصي', 'Travel account': 'حساب السفر', 'Shopping account': 'حساب التسوق',
+  'Stored on this phone': 'محفوظ على هذا الهاتف', 'Money': 'المال', 'Dollar rate': 'سعر الدولار',
+  'KD per US dollar. Use what your bank charged, fee included.': 'كم دينار لكل دولار. استخدم السعر الذي احتسبه بنكك شاملاً الرسوم.',
+  'Each pay period runs from this day to the day before the next one.': 'تبدأ كل فترة راتب من هذا اليوم وتنتهي قبل يوم الراتب التالي.',
+  'Backup': 'النسخ الاحتياطي',
+  'Your data lives only on this phone, and removing the app from your home screen deletes it. Back up once a month and keep the file somewhere safe, like iCloud Drive or Google Drive.': 'بياناتك موجودة على هذا الهاتف فقط، وحذف التطبيق من الشاشة الرئيسية يحذفها. خذ نسخة احتياطية مرة في الشهر واحفظ الملف في مكان آمن مثل iCloud Drive أو Google Drive.',
+  'Back up now': 'انسخ احتياطياً الآن', 'Import a file': 'استيراد ملف', 'Import a backup to restore your data, for example on a new phone.': 'استورد نسخة احتياطية لاستعادة بياناتك، مثلاً على هاتف جديد.',
+  'Categories': 'الفئات', 'Add category': 'إضافة فئة',
+  'Tap a category to rename it, change its icon, move it or delete it. This order is the order on the add screen.': 'اضغط على فئة لتغيير اسمها أو أيقونتها أو ترتيبها أو حذفها. هذا هو ترتيبها في شاشة الإضافة.',
+  'About': 'حول التطبيق', 'Erase all data': 'حذف كل البيانات', 'Tap again to erase everything': 'اضغط مرة أخرى لحذف كل شيء',
+  'No backup yet. Back up once a month so you can restore your data.': 'لا توجد نسخة احتياطية بعد. خذ نسخة مرة في الشهر لتتمكن من استعادة بياناتك.',
+  'Close': 'إغلاق', 'Edit purchase': 'تعديل العملية', 'Refund': 'استرجاع', 'Today': 'اليوم', 'Yesterday': 'أمس', 'Date': 'التاريخ',
+  'Add a note': 'أضف ملاحظة', 'Note': 'ملاحظة', 'Category': 'الفئة', 'Delete digit': 'حذف رقم', 'Delete': 'حذف', 'Save': 'حفظ', 'Save changes': 'حفظ التغييرات',
+  'Edit categories': 'تعديل الفئات', 'Edit': 'تعديل', 'Change anything, then save.': 'غيّر ما تريد ثم احفظ.',
+  'Type the amount, then tap a category': 'اكتب المبلغ ثم اختر الفئة', 'Tap Save, or tap another category': 'اضغط «حفظ» أو اختر فئة أخرى',
+  'Tap a category to save': 'اختر فئة للحفظ', 'Type the amount first.': 'اكتب المبلغ أولاً.', 'Pick a category.': 'اختر فئة.', 'Pick a date.': 'اختر تاريخاً.',
+  'Purchase updated.': 'تم تحديث العملية.', 'Purchase deleted.': 'حُذفت العملية.', 'Tap again to delete': 'اضغط مرة أخرى للحذف',
+  'Undo': 'تراجع', 'Reload': 'إعادة تحميل', 'A new version of the app is ready.': 'نسخة جديدة من التطبيق جاهزة.',
+  'Edit line': 'تعديل البند', 'Name': 'الاسم', 'Group': 'المجموعة', 'Currency': 'العملة', 'Amount': 'المبلغ', 'Repeats': 'التكرار', 'Monthly': 'شهري', 'Yearly': 'سنوي',
+  'Due month': 'شهر الاستحقاق', 'Starts': 'يبدأ', 'Ends': 'ينتهي', 'e.g. Car fund': 'مثلاً: صندوق السيارة', 'Not set': 'غير محدد', 'From the start': 'من البداية', 'No end': 'بلا نهاية',
+  'Raising an amount takes the difference from leftover.': 'رفع المبلغ يأخذ الفرق من المتبقي.', 'New lines are paid from leftover.': 'البنود الجديدة تُدفع من المتبقي.',
+  'Edit income': 'تعديل الدخل', 'Add a raise or allowance': 'إضافة زيادة أو بدل', 'e.g. Promotion raise': 'مثلاً: زيادة الترقية',
+  'Amount per month (KD)': 'المبلغ الشهري (د.ك)', 'Extra income goes straight to leftover.': 'الدخل الإضافي يذهب مباشرة إلى المتبقي.',
+  'Edit account': 'تعديل الحساب', 'e.g. Travel account': 'مثلاً: حساب السفر', 'Balance (KD)': 'الرصيد (د.ك)', 'Give it a name.': 'أعطه اسماً.',
+  'Enter an amount of zero or more, like 150 or 12.5.': 'أدخل مبلغاً يساوي صفراً أو أكثر، مثل 150 أو 12.5.',
+  'The end month has to be after the start month.': 'يجب أن يكون شهر النهاية بعد شهر البداية.', 'Enter an amount of zero or more.': 'أدخل مبلغاً يساوي صفراً أو أكثر.',
+  'Enter a balance of zero or more.': 'أدخل رصيداً يساوي صفراً أو أكثر.', 'Edit category': 'تعديل الفئة', 'Short name': 'اسم مختصر',
+  'Shown under the icon on the add screen. Up to 10 letters.': 'يظهر تحت الأيقونة في شاشة الإضافة. حتى 10 أحرف.', 'Icon': 'الأيقونة',
+  'Move up': 'تحريك لأعلى', 'Move down': 'تحريك لأسفل', 'If you delete it, move its purchases to': 'عند الحذف، انقل عملياتها إلى', 'e.g. Talabat': 'مثلاً: طلبات',
+  'New categories go to the end of the list.': 'الفئات الجديدة تُضاف في نهاية القائمة.', 'Give the category a name.': 'أعطِ الفئة اسماً.',
+  'Import': 'استيراد', 'Choose a backup file. You can also paste its text.': 'اختر ملف نسخة احتياطية، أو الصق نصه.', 'Choose a file': 'اختر ملفاً',
+  'Or paste the text': 'أو الصق النص', 'Import pasted text': 'استيراد النص الملصق', 'Replace': 'استبدال', 'an earlier date': 'تاريخ سابق',
+  'That isn’t a Payroll Planner file. Pick a backup file that ends in .json.': 'هذا ليس ملفاً من مخطط الراتب. اختر ملف نسخة احتياطية امتداده json.',
+  'This file has no plan, purchases or categories in it.': 'هذا الملف لا يحتوي على خطة أو مشتريات أو فئات.',
+  'That file is too large to be a Payroll Planner file.': 'هذا الملف أكبر من أن يكون ملفاً من مخطط الراتب.',
+  'That file couldn’t be read. Try saving it to Files first.': 'تعذّرت قراءة الملف. جرّب حفظه في تطبيق «الملفات» أولاً.',
+  'Categories updated.': 'تم تحديث الفئات.',
+  'Backup ready. Keep the file somewhere safe, like iCloud Drive or Google Drive.': 'النسخة الاحتياطية جاهزة. احفظ الملف في مكان آمن مثل iCloud Drive أو Google Drive.',
+  'The backup couldn’t be shared. Try again.': 'تعذّرت مشاركة النسخة الاحتياطية. حاول مرة أخرى.',
+  'Enter the rate as KD per dollar, like 0.3085.': 'أدخل السعر بالدينار لكل دولار، مثل 0.3085.', 'Dollar rate updated.': 'تم تحديث سعر الدولار.',
+  'Couldn’t save on this phone. Free up storage, then try again.': 'تعذّر الحفظ على هذا الهاتف. وفّر مساحة ثم حاول مرة أخرى.',
+  'Fork and knife': 'شوكة وسكين', 'Delivery bag': 'حقيبة توصيل', 'Cart': 'عربة تسوق', 'Plane': 'طائرة', 'Fuel pump': 'مضخة وقود', 'Car': 'سيارة', 'Bus': 'حافلة',
+  'Wi-Fi': 'واي فاي', 'Shirt': 'قميص', 'Coins': 'عملات', 'Scissors': 'مقص', 'Phone': 'هاتف', 'Dumbbell': 'دمبل', 'Medical': 'طبي', 'Heart': 'قلب', 'Ticket': 'تذكرة',
+  'Game controller': 'يد ألعاب', 'People': 'أشخاص', 'Tent': 'خيمة', 'Gift': 'هدية', 'Shopping bag': 'كيس تسوق', 'Card': 'بطاقة', 'House': 'منزل', 'Book': 'كتاب',
+  'Wrench': 'مفتاح ربط', 'Water': 'ماء', 'Tag': 'وسم', 'More': 'المزيد',
+  'Dining out': 'مطاعم', 'Delivery apps': 'تطبيقات التوصيل', 'Groceries': 'بقالة', 'Coffee': 'قهوة', 'Fuel': 'بنزين', 'Car care': 'السيارة',
+  'Bills & subscriptions': 'فواتير واشتراكات', 'Clothes': 'ملابس', 'Health & gym': 'صحة ورياضة', 'Grooming': 'عناية', 'Entertainment': 'ترفيه',
+  'Friends & outings': 'طلعات مع الربع', 'Travel': 'سفر', 'Gifts & charity': 'هدايا وصدقات', 'Other': 'أخرى',
+  'Duty-day food': 'أكل الدوام', 'Car care & wash': 'السيارة والغسيل', 'Internet & subscriptions': 'إنترنت واشتراكات', 'Laundry': 'غسيل',
+  'Grooming & barber': 'حلاقة وعناية', 'Gadgets & electronics': 'أجهزة وإلكترونيات', 'Health': 'صحة', 'Outdoor & camping': 'بر وكشتات', 'Charity & gifts': 'صدقات وهدايا',
+  'Dining': 'مطاعم', 'Delivery': 'توصيل', 'Duty food': 'أكل الدوام', 'Internet': 'إنترنت', 'Barber': 'حلاق', 'Gadgets': 'أجهزة', 'Fun': 'ترفيه', 'Friends': 'الربع',
+  'Outdoor': 'كشتة', 'Charity': 'صدقة', 'Bills': 'فواتير', 'Gifts': 'هدايا',
+  'Car loan': 'قرض السيارة', 'Rent': 'الإيجار', 'Mom': 'الوالدة', 'Dad': 'الوالد', 'Sister': 'الأخت', 'Brother': 'الأخ', 'household': 'مصروف البيت', 'extra': 'إضافي',
+  'Extra savings': 'ادخار إضافي', 'Car insurance and service': 'تأمين السيارة وصيانتها', 'Gifts and occasions': 'هدايا ومناسبات', 'Car wash': 'غسيل السيارة', 'Pharmacy': 'صيدلية',
+  'Payroll Planner backup': 'نسخة احتياطية من مخطط الراتب',
+  'Changes the app’s words. Names you typed stay as you typed them, except common ones like Groceries.': 'يغيّر لغة التطبيق. الأسماء التي كتبتها تبقى كما هي، ما عدا الشائعة مثل «بقالة».',
+};
+const AR_HTML = {
+  'Tap the <b>Share</b> button in Safari.': 'اضغط زر <b>مشاركة</b> في Safari.',
+  'Choose <b>Add to Home Screen</b>, then <b>Add</b>.': 'اختر <b>إضافة إلى الشاشة الرئيسية</b>، ثم <b>إضافة</b>.',
+  'Open <b>Payroll</b> from your home screen and set it up there.': 'افتح <b>Payroll</b> من الشاشة الرئيسية وأكمل الإعداد هناك.',
+  'Tap <b>⋮</b> at the top right of Chrome.': 'اضغط <b>⋮</b> أعلى متصفح Chrome.',
+  'Choose <b>Add to Home screen</b> or <b>Install app</b>, then <b>Install</b>.': 'اختر <b>إضافة إلى الشاشة الرئيسية</b> أو <b>تثبيت التطبيق</b>، ثم <b>تثبيت</b>.',
+  'Open <b>Payroll</b> from your home screen.': 'افتح <b>Payroll</b> من الشاشة الرئيسية.',
+};
+const AR_GROUP_LOWER = { 'obligations': 'الالتزامات', 'family': 'الأهل', 'investing': 'الاستثمار', 'savings': 'الادخار', 'spending accounts': 'حسابات المصروف', 'yearly costs': 'المصاريف السنوية' };
+const AR_MON = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+const EN_MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const EN_MONL = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const AR_DAY = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+const EN_DAY = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const R = (re, fn) => [re, fn];
+/* Arabic counted nouns: 1 → word, 2 → dual, 3–10 → plural, 11+ → singular accusative. */
+function arCount(n, one, two, few, many) {
+  const v = Number(String(n).replace(/,/g, ''));
+  if (v === 1) return one;
+  if (v === 2) return two;
+  if (Number.isInteger(v) && v >= 3 && v <= 10) return `${n} ${few}`;
+  return `${n} ${many}`;
+}
+const arMonths = (n) => arCount(n, 'شهر', 'شهرين', 'أشهر', 'شهراً');
+const arDays = (n) => arCount(n, 'يوم', 'يومين', 'أيام', 'يوماً');
+const AR_RULES = [
+  R(/^Step (\d+) of (\d+)$/, (m, a, b) => `الخطوة ${a} من ${b}`),
+  R(/^A common guideline is to keep at least 20% of your salary: (.+) KD a month\.$/, (m, a) => `من القواعد الشائعة أن تحتفظ بـ\u00A020% على الأقل من راتبك: ${a} د.ك شهرياً.`),
+  R(/^That’s (.+) KD more than you earn\. Lower something before you finish\.$/, (m, a) => `هذا أكثر من دخلك بـ\u00A0${a} د.ك. خفّض شيئاً قبل أن تنهي.`),
+  R(/^(.+) KD is left over\. It stays as leftover until you give it a job\.$/, (m, a) => `يتبقى ${a} د.ك، ويبقى في «المتبقي» حتى تخصص له وجهة.`),
+  R(/^Your plan spends (.+) KD more than you earn\. Go back and lower something\.$/, (m, a) => `خطتك تصرف أكثر من دخلك بـ\u00A0${a} د.ك. ارجع وخفّض شيئاً.`),
+  R(/^You keep (.+) KD a month \((\d+)% of your salary\), counting savings, investing and leftover\. Tap \+ whenever you spend\.$/, (m, a, b) => `تحتفظ بـ\u00A0${a} د.ك شهرياً (${b}% من راتبك) بين ادخار واستثمار ومتبقٍ. اضغط + كلما صرفت.`),
+  R(/^Your plan spends (.+) KD more than you earn from (.+)\. Lower a line until leftover is back at zero or above\.$/, (m, a, b) => `خطتك تصرف أكثر من دخلك بـ\u00A0${a} د.ك ابتداءً من ${b}. خفّض بنداً حتى يعود المتبقي إلى صفر أو أكثر.`),
+  R(/^Day (\d+) of (\d+)$/, (m, a, b) => `اليوم ${a} من ${b}`),
+  R(/^(\d+)% of the (.+) KD plan spent$/, (m, a, b) => `صُرف ${a}% من خطة ${b} د.ك`),
+  R(/^This pay period hasn’t started yet\. (.+) KD is planned\.$/, (m, a) => `لم تبدأ هذه الفترة بعد. المخطط لها ${a} د.ك.`),
+  R(/^Finished (.+) KD under plan\.$/, (m, a) => `انتهت بأقل من الخطة بـ\u00A0${a} د.ك.`),
+  R(/^Finished (.+) KD over plan\.$/, (m, a) => `انتهت بأكثر من الخطة بـ\u00A0${a} د.ك.`),
+  R(/^You’re (.+) KD over plan with (\d+) days? to go\.$/, (m, a, b) => `تجاوزت الخطة بـ\u00A0${a} د.ك، والأيام المتبقية: ${b}.`),
+  R(/^(\d+) days? left until payday\. (.+) KD under an even pace\.$/, (m, a, b) => `الأيام المتبقية حتى الراتب: ${a}. أقل من الوتيرة المتساوية بـ\u00A0${b} د.ك.`),
+  R(/^(\d+) days? left until payday\. (.+) KD ahead of an even pace\.$/, (m, a, b) => `الأيام المتبقية حتى الراتب: ${a}. أسرع من الوتيرة المتساوية بـ\u00A0${b} د.ك.`),
+  R(/^(\w{3}) (\d{4}) pay period$/, (m, a, b) => `فترة راتب ${a} ${b}`),
+  R(/^Went (.+) KD over plan: (.+) KD spent of (.+) KD\.$/, (m, a, b, c) => `تجاوزت الخطة بـ\u00A0${a} د.ك: صُرف ${b} د.ك من ${c} د.ك.`),
+  R(/^Ended (.+) KD under plan\. You moved (.+) KD to savings on (.+)\.$/, (m, a, b, c) => `انتهت بأقل من الخطة بـ\u00A0${a} د.ك. نقلت ${b} د.ك إلى الادخار في ${c}.`),
+  R(/^Ended (.+) KD under plan\. On payday, move it to savings so it doesn’t pile up in your personal account\.$/, (m, a) => `انتهت بأقل من الخطة بـ\u00A0${a} د.ك. انقله إلى الادخار يوم الراتب حتى لا يتراكم في حسابك الشخصي.`),
+  R(/^I moved it: add (.+) KD to (.+)$/, (m, a, b) => `نقلته: أضف ${a} د.ك إلى ${trPhrase(b)}`),
+  R(/^Added (.+) KD to (.+)\.$/, (m, a, b) => `تمت إضافة ${a} د.ك إلى ${trPhrase(b)}.`),
+  R(/^Spent (.+) KD of (.+) KD this pay period$/, (m, a, b) => `صُرف ${a} د.ك من ${b} د.ك في هذه الفترة`),
+  R(/^Plan ([\d,]+)$/, (m, a) => `الخطة ${a}`),
+  R(/^Even pace (.+) KD$/, (m, a) => `الوتيرة المتساوية ${a} د.ك`),
+  R(/^Spent (.+) KD$/, (m, a) => `صُرف ${a} د.ك`),
+  R(/^(\d+ \w{3}) · day (\d+) of (\d+)$/, (m, a, b, c) => `${a} · اليوم ${b} من ${c}`),
+  R(/^(.+), (.+) KD( refund)?\. Edit$/, (m, a, b, c) => `${trPhrase(a)}، ${b} د.ك${c ? ' استرجاع' : ''}. تعديل`),
+  R(/^(.+) · refund$/, (m, a) => `${trPhrase(a)} · استرجاع`),
+  R(/^Salary split: (.+), leftover (.+) KD$/, (m, a, b) => `توزيع الراتب: ${a.split(', ').map((part) => { const g = part.match(/^(.+) ([−\d,.]+) KD$/); return g ? `${trPhrase(g[1])} ${g[2]} د.ك` : part; }).join('، ')}، المتبقي ${b} د.ك`),
+  R(/^KD · (\d+)% of salary$/, (m, a) => `د.ك · ${a}% من الراتب`),
+  R(/^(\d+)% of salary$/, (m, a) => `${a}% من الراتب`),
+  R(/^Your plan · (.+)$/, (m, a) => `خطتك · ${a}`),
+  R(/^\+ Add to (.+)$/, (m, a) => `+ إضافة إلى ${AR_GROUP_LOWER[a] || trPhrase(a)}`),
+  R(/^Add to (.+)$/, (m, a) => `إضافة إلى ${AR_GROUP_LOWER[a] || trPhrase(a)}`),
+  R(/^from (\w{3} \d{4})$/, (m, a) => `من ${a}`),
+  R(/^ended (\w{3} \d{4})$/, (m, a) => `انتهى ${a}`),
+  R(/^until (\w{3} \d{4})$/, (m, a) => `حتى ${a}`),
+  R(/^due (\w{3})$/, (m, a) => `يستحق في ${a}`),
+  R(/^(.+) amount in (.+)$/, (m, a, b) => `مبلغ ${trPhrase(a)} (${trPhrase(b)})`),
+  R(/^Lower (.+) by (\d+)$/, (m, a, b) => `خفض ${trPhrase(a)} بمقدار ${b}`),
+  R(/^Raise (.+) by (\d+)$/, (m, a, b) => `رفع ${trPhrase(a)} بمقدار ${b}`),
+  R(/^Show (\w+ \d{4})$/, (m, a) => `عرض ${a}`),
+  R(/^Leftover (.+) KD$/, (m, a) => `المتبقي ${a} د.ك`),
+  R(/^Kept (.+) KD · (\d+)%$/, (m, a, b) => `المحتفظ به ${a} د.ك · ${b}%`),
+  R(/^(Ends|Starts): (.+) ([+−-]?[\d,.]+)$/, (m, a, b, c) => `${a === 'Ends' ? 'ينتهي' : 'يبدأ'}: ${trPhrase(b)} ${c}`),
+  R(/^(.+) (ends|starts)$/, (m, a, b) => `${b === 'ends' ? 'ينتهي' : 'يبدأ'} ${trPhrase(a)}`),
+  R(/^Starts (.+)$/, (m, a) => `تبدأ ${a}`),
+  R(/^Leftover only had (.+) KD in (.+), so (.+) is set to (.+) (KD|USD)( a year)?\. Lower another line to free up more\.$/, (m, a, b, c, d, u, y) => `المتبقي في ${b} كان ${a} د.ك فقط، لذلك ضُبط ${trPhrase(c)} على ${d} ${u === 'USD' ? 'دولار' : 'د.ك'}${y ? ' سنوياً' : ''}. خفّض بنداً آخر لتوفير المزيد.`),
+  R(/^Leftover in (.+) has only (.+) KD, so that change doesn’t fit\. Lower the amount or free up leftover first\.$/, (m, a, b) => `المتبقي في ${a} هو ${b} د.ك فقط، لذلك لا يتسع هذا التغيير. خفّض المبلغ أو وفّر من المتبقي أولاً.`),
+  R(/^Leftover in (.+) has only (.+) KD, so this doesn’t fit\. Shorten the dates, lower the amount, or free up leftover first\.$/, (m, a, b) => `المتبقي في ${a} هو ${b} د.ك فقط، لذلك لا يتسع هذا. قصّر المدة أو خفّض المبلغ أو وفّر من المتبقي أولاً.`),
+  R(/^\+(.+) KD a month added to leftover\.$/, (m, a) => `أُضيف +${a} د.ك شهرياً إلى المتبقي.`),
+  R(/^Deleted (.+)\. Its (.+) KD a month moved to leftover\.$/, (m, a, b) => `تم حذف ${trPhrase(a)}. انتقل ${b} د.ك شهرياً إلى المتبقي.`),
+  R(/^Deleted (.+)\. (\d+) purchases? moved to (.+)\.$/, (m, a, b, c) => `تم حذف ${trPhrase(a)}. عدد العمليات المنقولة إلى ${trPhrase(c)}: ${b}.`),
+  R(/^Deleted (.+)\.$/, (m, a) => `تم حذف ${trPhrase(a)}.`),
+  R(/^short for .+$/, () => 'يوجد عجز'),
+  R(/^([\d.]+) mo$/, (m, a) => `${a} شهر`),
+  R(/^([\d.]+) of (\d+) months covered$/, (m, a, b) => `مغطى ${a} من ${b} أشهر`),
+  R(/^(\d+) months$/, (m, a) => arMonths(a)),
+  R(/^Essentials are (.+) KD a month: obligations, family and your personal account\. Travel and shopping aren’t counted because you’d pause them in an emergency\. ?(.*)$/, (m, a, b) => `الأساسيات ${a} د.ك شهرياً: الالتزامات والأهل ومصروفك الشخصي. السفر والتسوق غير محسوبين لأنك ستوقفهما وقت الطوارئ.${b ? ' ' + trPhrase(b) : ''}`),
+  R(/^At (.+) KD a month you reach (\d+) months in about (\d+) months\.$/, (m, a, b, c) => `بمعدل ${a} د.ك شهرياً تصل إلى ${arMonths(b)} خلال ${arMonths(c)} تقريباً.`),
+  R(/^(\d+) months is (.+) KD\.$/, (m, a, b) => `${arMonths(a)} تعادل ${b} د.ك.`),
+  R(/^You’re past (\d+) months, so the monthly transfer could go to investing\.$/, (m, a) => `تجاوزت ${arMonths(a)}، لذا يمكن توجيه التحويل الشهري إلى الاستثمار.`),
+  R(/^(.+) · estimate$/, (m, a) => `${trPhrase(a)} · تقديري`),
+  R(/^due (\w{3} \d{4}) · in (\d+) months?$/, (m, a, b) => `تستحق ${a} · بعد ${arMonths(b)}`),
+  R(/^short (.+) KD$/, (m, a) => `عجز ${a} د.ك`),
+  R(/^(.+) balance in KD$/, (m, a) => `رصيد ${trPhrase(a)} بالدينار`),
+  R(/^(.+) in KD$/, (m, a) => `${trPhrase(a)} بالدينار`),
+  R(/^(.+) costs about (.+) KD a month at this rate\.(.*)$/, (m, a, b, c) => `${a.replace(/ a year/g, ' سنوياً')} تكلف حوالي ${b} د.ك شهرياً بهذا السعر.${c.trim() ? ' ' + trPhrase(c.trim()) : ''}`),
+  R(/^Mid-market rate on (.+) \(Wise\)\.?$/, (m, a) => `سعر السوق في ${a} (Wise).`),
+  R(/^Updated (.+?)\.?$/, (m, a) => `حُدّث في ${a}.`),
+  R(/^Payroll Planner ([\d.]+)\. (\d+) plan lines, (\d+) purchases and (\d+) accounts are stored on this phone\. Your numbers never leave it: there’s no account and no server, and the app only downloads its own updates and fonts\. It helps you plan, but it isn’t financial advice\.$/, (m, v, a, b, c) => `مخطط الراتب ${v}. على هذا الهاتف: بنود الخطة ${a}، والمشتريات ${b}، والحسابات ${c}. أرقامك لا تغادره أبداً: لا حساب ولا خادم، والتطبيق ينزّل تحديثاته وخطوطه فقط. يساعدك على التخطيط، وليس استشارة مالية.`),
+  R(/^Last backup (.+?)(?:, (\d+) days? ago|, today)\.( Time for a new one\.)?$/, (m, a, b, c) => `آخر نسخة احتياطية ${a}${b ? `، منذ ${arDays(b)}` : '، اليوم'}.${c ? ' حان وقت نسخة جديدة.' : ''}`),
+  R(/^Refund of (.+) KD$/, (m, a) => `استرجاع ${a} د.ك`),
+  R(/^(Logged|Refund) (.+) KD · (.+)$/, (m, a, b, c) => `${a === 'Logged' ? 'سُجّل' : 'استرجاع'} ${b} د.ك · ${trPhrase(c)}`),
+  R(/^(.+): now type the amount$/, (m, a) => `${trPhrase(a)}: اكتب المبلغ الآن`),
+  R(/^Replace everything on this phone with the backup from (.+)\? It has (\d+) purchases\.$/, (m, a, b) => `استبدال كل ما على هذا الهاتف بالنسخة الاحتياطية من ${trPhrase(a)}؟ عدد العمليات فيها: ${b}.`),
+  R(/^Imported your plan and (\d+) purchases\.$/, (m, a) => `تم استيراد خطتك، وعدد العمليات: ${a}.`),
+  R(/^Added (\d+) purchases?(?:; (\d+) were already here)?\.$/, (m, a, b) => `أُضيفت عمليات عددها ${a}${b ? `، وكانت ${b} موجودة مسبقاً` : ''}.`),
+  R(/^Position (\d+) of (\d+)(?: · used by (\d+) purchases?\. Renaming moves them with it\.|\.)$/, (m, a, b, c) => `الترتيب ${a} من ${b}${c ? ` · مستخدمة في ${c} عمليات. تغيير الاسم ينقلها معها.` : '.'}`),
+  R(/^There’s already a category called (.+)\.$/, (m, a) => `توجد فئة بهذا الاسم: ${trPhrase(a)}.`),
+  R(/^Renamed to (.+)\. (\d+) purchases? moved with it\.$/, (m, a, b) => `تمت إعادة التسمية إلى ${a}. عدد العمليات المنقولة معها: ${b}.`),
+  R(/^Added (.+)\.$/, (m, a) => `تمت إضافة ${trPhrase(a)}.`),
+  R(/^Saved (.+)\.$/, (m, a) => `تم حفظ ${trPhrase(a)}.`),
+  R(/^(\w{3}) pay · now$/, (m, a) => `راتب ${a} · الآن`),
+  R(/^(\w{3}) pay ’(\d{2})$/, (m, a, b) => `راتب ${a} 20${b}`),
+  R(/^(.+?)(?:, (\d+) purchases)?\. Edit$/, (m, a, b) => `${trPhrase(a)}${b ? `، العمليات: ${b}` : ''}. تعديل`),
+  R(/^(.+) transfer$/, (m, a) => `تحويل ${trPhrase(a)}`),
+  R(/^([^()]+) \(([^()]+)\)$/, (m, a, b) => `${trPhrase(a)} (${trPhrase(b)})`),
+];
+function arTokens(s) {
+  return s
+    .replace(/\b(January|February|March|April|May|June|July|August|September|October|November|December)\b/g, (m) => AR_MON[EN_MONL.indexOf(m)])
+    .replace(/\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b/g, (m) => AR_MON[EN_MON.indexOf(m)])
+    .replace(/\b(Sun|Mon|Tue|Wed|Thu|Fri|Sat)\b/g, (m) => AR_DAY[EN_DAY.indexOf(m)])
+    .replace(/(\d)(st|nd|rd|th)\b/g, '$1')
+    .replace(/\bKD\b/g, 'د.ك');
+}
+function trPhrase(s) {
+  const k = String(s).trim();
+  if (!k) return String(s);
+  if (Object.prototype.hasOwnProperty.call(AR, k)) return AR[k];
+  for (const [re, fn] of AR_RULES) { const m = k.match(re); if (m) return arTokens(fn(...m)); }
+  return arTokens(k);
+}
+/* Keep numbers, signs and percentages in reading order inside Arabic sentences. */
+function isolateNumbers(s) { return s.replace(/(?<![\u2066\d.,$])\$?[+−-]?\d[\d,]*(?:\.\d+)*%?/g, '\u2066$&\u2069'); }
+const trCache = new Map();
+function translate(s) {
+  if (LANG !== 'ar' || !s || !(/[A-Za-z]/.test(s) || /[+−-]\d/.test(s))) return s;
+  if (trCache.has(s)) return trCache.get(s);
+  const lead = s.match(/^\s*/)[0];
+  const trail = s.match(/\s*$/)[0];
+  const out = lead + isolateNumbers(trPhrase(s)) + trail;
+  if (trCache.size > 3000) trCache.clear();
+  trCache.set(s, out);
+  return out;
+}
+const trText = new WeakMap();
+const trAttrs = new WeakMap();
+const TR_ATTRS = ['aria-label', 'placeholder'];
+const skipTr = (el) => !el || !!el.closest('script,style,textarea,.no-tr,[data-i18n-html]');
+function trTextNode(n) {
+  const cur = n.nodeValue;
+  const rec = trText.get(n);
+  if (rec && rec.ar === cur) return;
+  if (skipTr(n.parentElement)) return;
+  const ar = translate(cur);
+  if (ar === cur) { trText.delete(n); return; }
+  trText.set(n, { en: cur, ar });
+  n.nodeValue = ar;
+}
+function trAttr(el, name) {
+  const cur = el.getAttribute(name);
+  if (cur == null || skipTr(el)) return;
+  let rec = trAttrs.get(el);
+  if (!rec) { rec = {}; trAttrs.set(el, rec); }
+  if (rec[name] && rec[name].ar === cur) return;
+  const ar = translate(cur);
+  rec[name] = { en: cur, ar };
+  if (ar !== cur) el.setAttribute(name, ar);
+}
+function walkTree(root, onText, onEl) {
+  if (root.nodeType === 3) { onText(root); return; }
+  if (root.nodeType !== 1) return;
+  onEl(root);
+  const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
+  let n;
+  while ((n = w.nextNode())) { if (n.nodeType === 3) onText(n); else onEl(n); }
+}
+function translateTree(root) { walkTree(root, trTextNode, (el) => TR_ATTRS.forEach((a) => { if (el.hasAttribute(a)) trAttr(el, a); })); }
+function restoreTree(root) {
+  walkTree(root, (n) => { const rec = trText.get(n); if (rec && n.nodeValue === rec.ar) n.nodeValue = rec.en; trText.delete(n); }, (el) => {
+    const rec = trAttrs.get(el);
+    if (rec) { Object.keys(rec).forEach((a) => { if (el.getAttribute(a) === rec[a].ar) el.setAttribute(a, rec[a].en); }); trAttrs.delete(el); }
+  });
+}
+let trObserver = null;
+function startTranslator() {
+  if (trObserver) return;
+  trObserver = new MutationObserver((list) => {
+    if (LANG !== 'ar') return;
+    list.forEach((m) => {
+      if (m.type === 'characterData') trTextNode(m.target);
+      else if (m.type === 'attributes') trAttr(m.target, m.attributeName);
+      else m.addedNodes.forEach((n) => translateTree(n));
+    });
+  });
+  trObserver.observe(document.body, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: TR_ATTRS });
+}
+function applyLang() {
+  const ar = LANG === 'ar';
+  document.documentElement.lang = ar ? 'ar' : 'en';
+  document.documentElement.dir = ar ? 'rtl' : 'ltr';
+  document.title = ar ? AR['Payroll Planner'] : 'Payroll Planner';
+  document.querySelectorAll('[data-i18n-html]').forEach((el) => {
+    if (el.dataset.en == null) el.dataset.en = el.innerHTML.trim();
+    el.innerHTML = ar ? (AR_HTML[el.dataset.en] || el.dataset.en) : el.dataset.en;
+  });
+  document.querySelectorAll('[data-lang]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.lang === LANG)));
+  if (ar) translateTree(document.body); else restoreTree(document.body);
+}
+function setLang(l) {
+  if ((l !== 'ar' && l !== 'en') || l === LANG) return;
+  LANG = l;
+  try { localStorage.setItem(LANG_KEY, l); } catch (e) { /* ignore */ }
+  applyLang();
+  render();
+}
+/* Names written into a new plan follow the language it was set up in. */
+const dn = (s) => (LANG === 'ar' && Object.prototype.hasOwnProperty.call(AR, s) ? AR[s] : s);
 
 /* PURE:START */
 const GROUPS = [
@@ -776,7 +1139,7 @@ function dayIndex(iso, key, payDay) {
   return Math.round((Date.UTC(y, m - 1, d) - Date.UTC(start.getFullYear(), start.getMonth(), start.getDate())) / 86400000);
 }
 function personalLine(plan) {
-  return plan.lines.find((l) => l.id === plan.settings.personalLineId) || plan.lines.find((l) => /personal/i.test(l.name || ''));
+  return plan.lines.find((l) => l.id === plan.settings.personalLineId) || plan.lines.find((l) => /personal|شخصي/i.test(l.name || ''));
 }
 function personalSummary(plan, tx, key, todayIso) {
   const payDay = plan.settings.payDay;
@@ -903,6 +1266,9 @@ const CAT_META = {
   'Charity & gifts': ['Charity', 'gift'], 'Other': ['Other', 'other'],
   'Car care': ['Car care', 'car'], 'Bills & subscriptions': ['Bills', 'wifi'], 'Shopping': ['Shopping', 'bag'], 'Clothes': ['Clothes', 'shirt'],
   'Grooming': ['Grooming', 'scissors'], 'Travel': ['Travel', 'duty'], 'Gifts & charity': ['Gifts', 'gift'],
+  'مطاعم': ['مطاعم', 'dining'], 'تطبيقات التوصيل': ['توصيل', 'delivery'], 'بقالة': ['بقالة', 'groceries'], 'قهوة': ['قهوة', 'coffee'], 'بنزين': ['بنزين', 'fuel'],
+  'السيارة': ['السيارة', 'car'], 'فواتير واشتراكات': ['فواتير', 'wifi'], 'التسوق': ['تسوق', 'bag'], 'ملابس': ['ملابس', 'shirt'], 'صحة ورياضة': ['صحة', 'dumbbell'],
+  'عناية شخصية': ['عناية', 'scissors'], 'ترفيه': ['ترفيه', 'ticket'], 'طلعات مع الربع': ['الربع', 'friends'], 'سفر': ['سفر', 'duty'], 'هدايا وصدقات': ['هدايا', 'gift'], 'أخرى': ['أخرى', 'other'],
 };
 const defaultShort = (c) => (CAT_META[c] ? CAT_META[c][0] : String(c || 'Other').split(/\s*[&,]\s*|\s+/)[0]);
 function catShort(c) {
@@ -957,7 +1323,7 @@ function splitMoney(x) {
 function money(x, opts = {}) {
   const { neg, int, fils } = splitMoney(opts.noFils ? Math.round(x) : x);
   const sign = neg ? '−' : (opts.sign && x > EPS ? '+' : '');
-  return h('span', { class: `money ${opts.cls || ''}` }, h('span', { class: 'int', text: sign + int }), opts.noFils ? null : h('span', { class: 'fils', text: '.' + fils }), opts.unit ? h('span', { class: 'unit', text: ' ' + opts.unit }) : null);
+  return h('span', { class: `money ${opts.cls || ''}` }, h('bdi', { class: 'num', dir: 'ltr' }, h('span', { class: 'int', text: sign + int }), opts.noFils ? null : h('span', { class: 'fils', text: '.' + fils })), opts.unit ? h('span', { class: 'unit', text: ' ' + opts.unit }) : null);
 }
 function plainKD(x) {
   const { neg, int, fils } = splitMoney(x);
@@ -996,10 +1362,10 @@ function defaults() {
   const t = todayIso();
   return {
     schema: 1,
-    settings: { usdRate: 0.3082, payDay: 1, startMonth: periodOf(t, 1), personalLineId: 'lp', categories: DEFAULT_CATS.slice() },
-    income: [{ id: 'i1', name: 'Net salary', amount: 0, start: '', end: '' }],
-    lines: [{ id: 'lp', group: 'Spending accounts', name: 'Personal account', amount: 0, currency: 'KWD', per: 'month', start: '', end: '', note: '' }],
-    balances: [{ id: 'b1', name: 'Emergency fund', amount: null, kind: 'emergency' }, { id: 'b2', name: 'Savings account', amount: null, kind: 'savings' }, { id: 'b3', name: 'Yearly bills pot', amount: null, kind: 'yearly' }],
+    settings: { usdRate: 0.3082, payDay: 1, startMonth: periodOf(t, 1), personalLineId: 'lp', categories: (LANG === 'ar' ? AR_DEFAULT_CATS : DEFAULT_CATS).slice() },
+    income: [{ id: 'i1', name: dn('Net salary'), amount: 0, start: '', end: '' }],
+    lines: [{ id: 'lp', group: 'Spending accounts', name: dn('Personal account'), amount: 0, currency: 'KWD', per: 'month', start: '', end: '', note: '' }],
+    balances: [{ id: 'b1', name: dn('Emergency fund'), amount: null, kind: 'emergency' }, { id: 'b2', name: dn('Savings account'), amount: null, kind: 'savings' }, { id: 'b3', name: dn('Yearly bills pot'), amount: null, kind: 'yearly' }],
     sweeps: {},
   };
 }
@@ -1011,18 +1377,18 @@ function normalize(raw) {
   p.settings.payDay = Math.min(28, Math.max(1, Math.round(Number(p.settings.payDay) || 23)));
   p.settings.usdRate = Number(p.settings.usdRate) > 0 ? Number(p.settings.usdRate) : d.settings.usdRate;
   if (!/^\d{4}-\d{2}$/.test(p.settings.startMonth || '')) p.settings.startMonth = d.settings.startMonth;
-  if (!Array.isArray(p.settings.categories) || !p.settings.categories.length) p.settings.categories = DEFAULT_CATS.slice();
+  if (!Array.isArray(p.settings.categories) || !p.settings.categories.length) p.settings.categories = d.settings.categories.slice();
   ['catIcons', 'catShort'].forEach((k) => { if (!p.settings[k] || typeof p.settings[k] !== 'object' || Array.isArray(p.settings[k])) p.settings[k] = {}; });
   p.income = (Array.isArray(p.income) && p.income.length ? p.income : d.income).map((i) => ({ start: '', end: '', ...i, amount: Number(i.amount) || 0 }));
   p.lines = (Array.isArray(p.lines) ? p.lines : d.lines).map((l) => ({ currency: 'KWD', per: 'month', start: '', end: '', note: '', ...l, amount: Number(l.amount) || 0, group: GROUP_KEYS.includes(l.group) ? l.group : 'Obligations' }));
-  if (!p.lines.some((l) => l.id === p.settings.personalLineId)) { const pl = p.lines.find((l) => /personal/i.test(l.name || '')); p.settings.personalLineId = pl ? pl.id : ''; }
+  if (!p.lines.some((l) => l.id === p.settings.personalLineId)) { const pl = p.lines.find((l) => /personal|شخصي/i.test(l.name || '')); p.settings.personalLineId = pl ? pl.id : ''; }
   p.balances = Array.isArray(p.balances) ? p.balances.map((b) => ({ ...b })) : d.balances;
-  if (!p.balances.some((b) => b.kind === 'emergency')) p.balances.unshift({ id: uid('b'), name: 'Emergency fund', amount: null, kind: 'emergency' });
+  if (!p.balances.some((b) => b.kind === 'emergency')) p.balances.unshift({ id: uid('b'), name: dn('Emergency fund'), amount: null, kind: 'emergency' });
   if (!p.balances.some((b) => b.kind === 'savings')) {
-    const sv = p.balances.find((b) => b.kind !== 'emergency' && b.kind !== 'yearly' && /saving/i.test(b.name || ''));
-    if (sv) sv.kind = 'savings'; else p.balances.push({ id: uid('b'), name: 'Savings account', amount: null, kind: 'savings' });
+    const sv = p.balances.find((b) => b.kind !== 'emergency' && b.kind !== 'yearly' && /saving|توفير|ادخار/i.test(b.name || ''));
+    if (sv) sv.kind = 'savings'; else p.balances.push({ id: uid('b'), name: dn('Savings account'), amount: null, kind: 'savings' });
   }
-  if (!p.balances.some((b) => b.kind === 'yearly')) p.balances.push({ id: uid('b'), name: 'Yearly bills pot', amount: null, kind: 'yearly' });
+  if (!p.balances.some((b) => b.kind === 'yearly')) p.balances.push({ id: uid('b'), name: dn('Yearly bills pot'), amount: null, kind: 'yearly' });
   p.sweeps = p.sweeps && typeof p.sweeps === 'object' && !Array.isArray(p.sweeps) ? p.sweeps : {};
   return p;
 }
@@ -1238,9 +1604,9 @@ function finishSetup() {
   p.settings.payDay = su.payDay;
   p.settings.startMonth = periodOf(todayIso(), su.payDay);
   p.settings.personalLineId = 'lp';
-  p.income = [{ id: 'i1', name: 'Net salary', amount: t.salary, start: '', end: '' }];
+  p.income = [{ id: 'i1', name: dn('Net salary'), amount: t.salary, start: '', end: '' }];
   p.lines = su.rows.filter((r) => suNum(r.amount) > 0 || r.id === 'lp').map((r) => ({
-    id: r.id === 'lp' ? 'lp' : uid('l'), group: r.group, name: (r.name || '').trim() || 'Fixed cost', amount: suNum(r.amount), currency: 'KWD', per: 'month', start: '', end: '', note: '',
+    id: r.id === 'lp' ? 'lp' : uid('l'), group: r.group, name: r.custom ? (r.name || '').trim() || dn('Fixed cost') : dn(r.name), amount: suNum(r.amount), currency: 'KWD', per: 'month', start: '', end: '', note: '',
   }));
   state.plan = normalize(p);
   state.tx = [];
@@ -1285,7 +1651,7 @@ function renderSpending() {
   $('#spMeter').setAttribute('aria-label', `${Math.round(share)}% of the ${plainKD(ps.planAmt)} KD plan spent`);
   const paceEl = $('#spPace');
   paceEl.hidden = ps.when !== 'current' || ps.planAmt <= EPS;
-  paceEl.style.left = `${(ps.dayNow / ps.days) * 100}%`;
+  paceEl.style.insetInlineStart = `${(ps.dayNow / ps.days) * 100}%`;
   let note;
   if (!ps.line) note = 'Add a personal spending line to your plan to track your spending here.';
   else if (ps.when === 'future') note = `This pay period hasn’t started yet. ${plainKD(ps.planAmt)} KD is planned.`;
@@ -1325,14 +1691,14 @@ function renderSweep(ps) {
 function sweepPeriod(key, amount) {
   const before = clone(state.plan);
   let sv = savingsBalance();
-  if (!sv) { sv = { id: uid('b'), name: 'Savings account', amount: null, kind: 'savings' }; state.plan.balances.push(sv); }
+  if (!sv) { sv = { id: uid('b'), name: dn('Savings account'), amount: null, kind: 'savings' }; state.plan.balances.push(sv); }
   sv.amount = r3((Number(sv.amount) || 0) + amount);
   sv.asOf = todayIso();
   state.plan.sweeps[key] = { amount: r3(amount), at: todayIso() };
   writeStore(); render();
   toast(`Added ${plainKD(amount)} KD to ${sv.name}.`, () => { state.plan = before; writeStore(); render(); });
 }
-function measureText(svg, txt) { const el = s('text', { class: 'tick' }, txt); svg.append(el); const w = el.getComputedTextLength(); el.remove(); return w; }
+function measureText(svg, txt) { const el = s('text', { class: 'tick' }, translate(txt)); svg.append(el); const w = el.getComputedTextLength(); el.remove(); return w; }
 function renderPace(ps) {
   const host = $('#paceChart');
   host.replaceChildren();
@@ -1484,6 +1850,7 @@ function showTip(host, e, head, lines) {
   if (!tipEl || tipEl.parentNode !== host) { if (tipEl) tipEl.remove(); tipEl = h('div', { class: 'tip', role: 'presentation' }); host.append(tipEl); }
   tipEl.replaceChildren(h('div', { class: 'tip-h', text: head }), ...lines.map(([c, t]) => h('div', { class: 'tip-l' }, c ? h('span', { class: 'sw', style: `background:${c}` }) : null, h('span', { text: t }))));
   tipEl.hidden = false;
+  if (LANG === 'ar') translateTree(tipEl);
   const box = host.getBoundingClientRect();
   const w = tipEl.offsetWidth; const th = tipEl.offsetHeight;
   let x = e.clientX - box.left + 12; let y = e.clientY - box.top - th - 10;
@@ -1600,7 +1967,7 @@ function renderTimeline() {
     svg.append(g);
     if (i % every === 0) {
       svg.append(s('text', { class: 'tick', x: cx, y: height - bottom + 16, 'text-anchor': 'middle', style: sel ? 'fill: var(--ink); font-weight: 600' : null }, labels[i]));
-      if (m.slice(0, 4) !== lastYear) { svg.append(s('text', { class: 'tick', x: cx, y: height - bottom + 29, 'text-anchor': 'middle' }, `’${m.slice(2, 4)}`)); lastYear = m.slice(0, 4); }
+      if (m.slice(0, 4) !== lastYear) { svg.append(s('text', { class: 'tick', x: cx, y: height - bottom + 29, 'text-anchor': 'middle' }, LANG === 'ar' ? m.slice(0, 4) : `’${m.slice(2, 4)}`)); lastYear = m.slice(0, 4); }
     }
     if (i > 0 && changesAt(state.plan, m).length) svg.append(s('circle', { cx, cy: top - 8, r: 3.5, style: 'fill: var(--ink-2)' }));
     const hit = s('rect', { x: left + step * i, y: top - 14, width: step, height: height - top - bottom + 14, style: 'fill: transparent; cursor: pointer', tabindex: '0', role: 'button', 'aria-label': `Show ${monthLong(m)}` });
@@ -1668,7 +2035,7 @@ function renderAccounts() {
     efCard.append(h('p', { class: 'card-body', text: 'Add your obligations, family and personal account to the plan to measure cover.' }));
   } else {
     const target = 6;
-    const add = r3(state.plan.lines.filter((l) => l.group === 'Savings' && /emergency/i.test(l.name) && isActive(l, cur)).reduce((sum, l) => sum + monthlyKD(l, state.plan.settings.usdRate), 0));
+    const add = r3(state.plan.lines.filter((l) => l.group === 'Savings' && /emergency|طوارئ/i.test(l.name) && isActive(l, cur)).reduce((sum, l) => sum + monthlyKD(l, state.plan.settings.usdRate), 0));
     const need = r3(ess * target - efAmt);
     const eta = add > EPS && need > 0 ? Math.ceil(need / add) : 0;
     efCard.append(
@@ -2009,7 +2376,7 @@ function openCat(idx) {
   if (!isNew && used) {
     const others = cats.filter((c) => c !== name);
     $('#cReassign').replaceChildren(...others.map((c) => h('option', { value: c, text: c })));
-    $('#cReassign').value = others.includes('Other') ? 'Other' : others[0];
+    $('#cReassign').value = others.includes('Other') ? 'Other' : others.includes('أخرى') ? 'أخرى' : others[0];
   }
   renderCatIcons();
   syncCatMove();
@@ -2075,7 +2442,7 @@ async function exportBackup() {
   const file = new File([data], name, { type: 'application/json' });
   try {
     if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      await navigator.share({ files: [file], title: 'Payroll Planner backup' });
+      await navigator.share({ files: [file], title: translate('Payroll Planner backup') });
     } else {
       const url = URL.createObjectURL(file);
       const link = h('a', { href: url, download: name });
@@ -2191,6 +2558,7 @@ function bindStatic() {
   $$('[data-icon]').forEach((el) => { el.replaceChildren(icon(el.dataset.icon)); el.style.display = 'contents'; });
   $$('[data-tab]').forEach((b) => b.addEventListener('click', () => setTab(b.dataset.tab)));
   $$('[data-add]').forEach((b) => b.addEventListener('click', () => { if (state.plan) openAdd(null); }));
+  $$('[data-lang]').forEach((b) => b.addEventListener('click', () => setLang(b.dataset.lang)));
   $('#prevMonth').addEventListener('click', () => { const b = monthBounds(); if (state.month > b.min) { state.month = addMonths(state.month, -1); render(); } });
   $('#nextMonth').addEventListener('click', () => { const b = monthBounds(); if (state.month < b.max) { state.month = addMonths(state.month, 1); render(); } });
   $('#scrim').addEventListener('click', closeSheets);
@@ -2291,6 +2659,8 @@ function bindStatic() {
 
 function boot() {
   bindStatic();
+  applyLang();
+  startTranslator();
   const st = readStore();
   if (st && st.plan) {
     state.plan = normalize(st.plan);

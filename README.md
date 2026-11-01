@@ -11,6 +11,13 @@ Plan your monthly salary, track what you spend, and watch your savings grow — 
 
 The first time you open it, a one-minute setup asks for your salary, fixed costs, savings and spending money.
 
+## English or Arabic
+
+The app opens in Arabic if your phone is set to Arabic, and in English otherwise. Switch any time from the
+welcome screen or **Settings → Language**. Arabic reads right to left; amounts keep Western digits (1,250.500 د.ك).
+
+يعمل التطبيق بالعربية أو الإنجليزية. غيّر اللغة من شاشة البداية أو من **الإعدادات ← اللغة**.
+
 ## Privacy
 
 There's no account and no server. Everything you enter is stored only on your phone, inside the app.

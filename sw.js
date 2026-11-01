@@ -1,7 +1,7 @@
 /* Payroll Planner offline support.
    The page itself is fetched fresh whenever the phone is online (falling back to the saved copy offline),
    so updates show up on the next launch. Icons and other files come from the cache and refresh in the background. */
-const VERSION = 'pp-1.3.0';
+const VERSION = 'pp-1.4.0';
 const FONTS = 'pp-fonts';
 const SHELL = ['./', './index.html', './manifest.webmanifest', './icons/apple-touch-icon.png', './icons/icon-192.png', './icons/icon-512.png'];
 const OFFLINE = new Response('You’re offline and the app isn’t saved on this phone yet. Connect once, then it works offline.', { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
