@@ -365,6 +365,42 @@ svg { display: block; }
 .toast button { border: 0; background: none; color: var(--bg); font-weight: 750; text-decoration: underline; padding: 4px; }
 @media (prefers-reduced-motion: reduce) { .seg, .meter .fill, .bmeter .fill { transition: none; } }
 
+/* Plan summary: four jobs plus leftover; set-aside funds; pay-period results */
+.kpis4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+button.kpi { border: 0; border-top: 1px solid var(--band-line); background: none; color: inherit; font: inherit; text-align: start; padding: 9px 0 2px; align-content: start; }
+button.kpi[aria-expanded="true"] { border-top: 2px solid var(--band-ink); padding-top: 8px; }
+button.kpi[aria-expanded="true"] .eyebrow { color: var(--band-ink); }
+.kpis4 .kpi-v { font-size: clamp(15px, 4.3vw, 19px); }
+.kpi-hint { margin: -6px 0 0; font-size: 12px; color: var(--band-muted); }
+.kpi-detail { border-radius: var(--r-sm); background: var(--band-track); padding: 10px 12px; display: grid; gap: 6px; font-size: 13.5px; margin-top: -4px; }
+.kpi-detail-note { margin: 0; font-size: 12.5px; color: var(--band-muted); }
+.kpi-detail-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.kpi-detail-row > span:first-child { overflow-wrap: anywhere; }
+.pct-sign { font-size: .55em; margin-inline-start: 1px; opacity: .8; }
+.ring-center .left-sub { max-width: 8.2rem; text-wrap: balance; line-height: 1.25; }
+.lo-row { border-radius: var(--r-sm); background: var(--band-track); padding: 12px 14px; display: grid; gap: 6px; }
+.lo-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.lo-v { font-family: var(--font-display); font-stretch: 112%; font-weight: 700; font-size: 18px; }
+.lo-v[data-neg="true"] { color: var(--band-bad); }
+.lo-pct { font-family: var(--font-body); font-size: 12.5px; font-weight: 500; color: var(--band-muted); }
+.lo-note { margin: 0; font-size: 12.5px; color: var(--band-muted); }
+.lo-actions { display: flex; align-items: center; gap: 14px; }
+.btn.band-btn { min-height: 38px; padding: 0 16px; font-size: 14px; background: var(--band-ink); border-color: var(--band-ink); color: var(--band); }
+.link-btn.lo-undo { color: var(--band-ink); text-decoration: underline; font-size: 13px; }
+.btn.small { min-height: 36px; padding: 0 14px; font-size: 14px; flex: none; }
+.pb-list { display: grid; }
+.pb-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-block: 9px; border-top: 1px solid var(--line); font-size: 14px; }
+.pb-row:first-child { border-top: 0; padding-top: 0; }
+.pb-row.total { font-weight: 700; }
+.pb-label { color: var(--ink-2); overflow-wrap: anywhere; min-width: 0; }
+.pb-row.total .pb-label { color: var(--ink); }
+.fund { display: grid; gap: 7px; padding-block: 10px; border-top: 1px solid var(--line); }
+.fund-top { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px; align-items: center; }
+.fund-main { display: grid; gap: 3px; min-width: 0; justify-items: start; }
+.fund-sub { font-size: 12.5px; color: var(--muted); }
+.fund-msg-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.fund-msg { margin: 0; font-size: 13px; color: var(--ink-2); }
+
 /* Language: English or Arabic (right to left). Numbers keep Western digits and left-to-right order. */
 .wl-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; justify-self: stretch; }
 .lang-toggle { display: inline-flex; border: 1px solid var(--line-2); border-radius: 999px; padding: 2px; background: var(--surface-2); flex: none; }
@@ -496,19 +532,24 @@ svg { display: block; }
       <div class="band"><div class="gutter"><div class="inner pl-hero">
         <div class="ring-wrap" id="ringWrap">
           <svg id="ring" viewBox="0 0 240 240" role="img" aria-label="How your salary is split"></svg>
-          <div class="ring-center"><span class="eyebrow">Leftover</span><span class="left-big" id="leftBig">—</span><span class="left-sub" id="leftSub">KD this month</span></div>
+          <div class="ring-center"><span class="eyebrow" id="rateLabel">Savings rate</span><span class="left-big" id="leftBig">—</span><span class="left-sub" id="leftSub">—</span></div>
         </div>
         <div class="salary-row"><span class="eyebrow">Net salary</span><div id="salaryCtl"></div></div>
-        <div class="kpis3">
-          <div class="kpi"><span class="eyebrow">Kept</span><span class="kpi-v" id="kKept">—</span><span class="kpi-s" id="kKeptS">—</span></div>
-          <div class="kpi"><span class="eyebrow">Invested</span><span class="kpi-v" id="kInv">—</span><span class="kpi-s" id="kInvS">—</span></div>
-          <div class="kpi"><span class="eyebrow">Spending</span><span class="kpi-v" id="kSpend">—</span><span class="kpi-s" id="kSpendS">—</span></div>
+        <div class="kpis4" id="planKpis">
+          <button class="kpi" type="button" data-kpi="invested" aria-expanded="false" aria-controls="kpiDetail"><span class="eyebrow">Invested</span><span class="kpi-v" id="kInv">—</span><span class="kpi-s" id="kInvS">—</span></button>
+          <button class="kpi" type="button" data-kpi="saved" aria-expanded="false" aria-controls="kpiDetail"><span class="eyebrow">Saved</span><span class="kpi-v" id="kSaved">—</span><span class="kpi-s" id="kSavedS">—</span></button>
+          <button class="kpi" type="button" data-kpi="aside" aria-expanded="false" aria-controls="kpiDetail"><span class="eyebrow">Set aside</span><span class="kpi-v" id="kAside">—</span><span class="kpi-s" id="kAsideS">—</span></button>
+          <button class="kpi" type="button" data-kpi="living" aria-expanded="false" aria-controls="kpiDetail"><span class="eyebrow">Living</span><span class="kpi-v" id="kLiving">—</span><span class="kpi-s" id="kLivingS">—</span></button>
         </div>
+        <div class="kpi-detail" id="kpiDetail" hidden></div>
+        <p class="kpi-hint" id="kpiHint">Tap a box to see what’s in it.</p>
+        <div class="lo-row" id="loRow"></div>
         <p class="rule"><span data-icon="up"></span><span>Raises go straight to leftover. Any increase comes out of leftover, so the plan never spends more than you earn.</span></p>
       </div></div></div>
       <div class="gutter"><div class="inner">
         <div class="banner" data-banner hidden><span data-icon="alert"></span><span data-banner-text></span></div>
         <div class="content">
+          <section class="card" id="periodCard" hidden></section>
           <section class="card" aria-labelledby="ledgerTitle">
             <div class="card-head"><h2 class="card-title" id="ledgerTitle">Your plan</h2><span class="card-note">Tap a name for details</span></div>
             <div id="ledger"></div>
@@ -534,6 +575,7 @@ svg { display: block; }
       </div></div></div>
       <div class="gutter"><div class="inner content">
         <section class="card" id="efCard" aria-labelledby="efTitle"></section>
+        <section class="card" id="fundsCard" aria-labelledby="fundsTitle" hidden></section>
         <section class="card" id="billsCard" aria-labelledby="billsTitle"></section>
         <section class="card" aria-labelledby="balTitle">
           <div class="card-head"><h2 class="card-title" id="balTitle">Balances</h2><button class="link-btn" type="button" id="addBalance">Add account</button></div>
@@ -641,6 +683,8 @@ svg { display: block; }
       <div class="field"><label for="fAmount" id="fAmountL">Amount</label><input id="fAmount" type="text" inputmode="decimal" autocomplete="off"></div>
       <div class="field" data-kinds="line"><span class="lbl" id="fPerL">Repeats</span><div class="seg-ctl" role="radiogroup" aria-labelledby="fPerL"><input type="radio" name="fPer" id="fPerM" value="month"><label for="fPerM">Monthly</label><input type="radio" name="fPer" id="fPerY" value="year"><label for="fPerY">Yearly</label></div></div>
     </div>
+    <div class="field" data-kinds="balance" id="fTargetWrap"><label for="fTarget">Target (KD)</label><input id="fTarget" type="text" inputmode="decimal" autocomplete="off" placeholder="Optional"><p class="hint">Your next trip’s cost, for example. Anything above it is really savings.</p></div>
+    <div class="field" data-kinds="balance" id="fFundWrap"><label for="fFund">Saves up for</label><select id="fFund"></select></div>
     <div class="field" data-kinds="line" id="fDueWrap"><label for="fDue">Due month</label><select id="fDue"></select></div>
     <div class="field-row" data-kinds="line income">
       <div class="field"><label for="fStart">Starts</label><select id="fStart"></select></div>
@@ -698,7 +742,7 @@ svg { display: block; }
 <script>
 (() => {
 'use strict';
-const APP_VERSION = '1.4.0';
+const APP_VERSION = '1.5.0';
 const STORE_KEY = 'payroll-planner/v1';
 const DEFAULT_CATS = ['Dining out', 'Delivery apps', 'Groceries', 'Coffee', 'Fuel', 'Car care', 'Bills & subscriptions', 'Shopping', 'Clothes', 'Health & gym', 'Grooming', 'Entertainment', 'Friends & outings', 'Travel', 'Gifts & charity', 'Other'];
 
@@ -724,7 +768,7 @@ const AR = {
   'Back': 'رجوع', 'Cancel': 'إلغاء', 'Left to assign': 'المتبقي للتوزيع', 'Next': 'التالي', 'Start using it': 'ابدأ الاستخدام',
   'Your salary': 'راتبك', 'What lands in your account each month, after deductions?': 'كم يصل إلى حسابك كل شهر بعد الاستقطاعات؟',
   'Fixed costs': 'المصاريف الثابتة', 'What goes out every month no matter what? Leave blank anything that doesn’t apply.': 'ما الذي يُدفع كل شهر مهما حدث؟ اترك فارغاً ما لا ينطبق عليك.',
-  'Saving and investing': 'الادخار والاستثمار', 'How much do you want to keep each month?': 'كم تريد أن تحتفظ به كل شهر؟',
+  'Saving and investing': 'الادخار والاستثمار', 'How much do you want to save and invest each month?': 'كم تريد أن تدخر وتستثمر كل شهر؟',
   'Spending money': 'مصروفك', 'How much do you spend day to day? The Spending tab tracks this.': 'كم تصرف في أيامك العادية؟ تبويب «المصروف» يتابع هذا المبلغ.',
   'Your plan': 'خطتك', 'Here’s where your salary goes. You can change any of it later.': 'هذا توزيع راتبك، ويمكنك تغيير أي شيء لاحقاً.',
   'Rent or housing': 'الإيجار أو السكن', 'Or what you give at home': 'أو ما تساهم به في البيت', 'Car loan or installments': 'قرض السيارة أو الأقساط',
@@ -746,14 +790,14 @@ const AR = {
   'Categories appear once you log spending.': 'تظهر الفئات بعد أن تسجّل مصاريفك.', 'Nothing logged in this pay period yet.': 'لم تسجّل شيئاً في هذه الفترة بعد.',
   'Tap + to add a purchase: type the amount, then tap a category.': 'اضغط + لإضافة عملية: اكتب المبلغ ثم اختر الفئة.',
   'refund': 'استرجاع', 'Purchase': 'عملية شراء',
-  'How your salary is split': 'كيف يتوزع راتبك', 'KD this month': 'د.ك هذا الشهر', 'Kept': 'المحتفظ به', 'Invested': 'المستثمر',
+  'How your salary is split': 'كيف يتوزع راتبك', 'Invested': 'المستثمر',
   'Raises go straight to leftover. Any increase comes out of leftover, so the plan never spends more than you earn.': 'الزيادات تذهب مباشرة إلى «المتبقي»، وأي زيادة في بند تُخصم منه، فلا تصرف الخطة أكثر من دخلك أبداً.',
   'Tap a name for details': 'اضغط على الاسم للتفاصيل', 'Next 12 months': 'الأشهر الـ 12 القادمة', 'Tap a month to view it': 'اضغط على شهر لعرضه',
   'Coming up': 'قادم', '+ Add a raise or allowance': '+ إضافة زيادة أو بدل',
   'This month spends more than you earn. Lower a line to fix it.': 'هذا الشهر يصرف أكثر من دخلك. خفّض بنداً لإصلاح ذلك.',
   'Raises land here. Any increase you make is taken from here first.': 'الزيادات تصل هنا، وأي زيادة تجريها تُؤخذ من هنا أولاً.',
   'Salary split for each of the next 12 pay periods': 'توزيع الراتب لكل فترة من الفترات الـ 12 القادمة',
-  'KD a month': 'د.ك شهرياً', 'KD short this month': 'د.ك عجز هذا الشهر', 'estimate': 'تقديري', 'KD': 'د.ك', 'KD/yr': 'د.ك/سنة', 'USD': 'دولار', 'USD/yr': 'دولار/سنة',
+  'KD a month': 'د.ك شهرياً', 'estimate': 'تقديري', 'KD': 'د.ك', 'KD/yr': 'د.ك/سنة', 'USD': 'دولار', 'USD/yr': 'دولار/سنة',
   'Total cash': 'إجمالي النقد', 'Emergency': 'الطوارئ', 'of essentials': 'من الأساسيات', 'Bills pot': 'حصالة الفواتير', 'with a balance': 'لها رصيد',
   'Balances': 'الأرصدة', 'Add account': 'إضافة حساب', 'add due months': 'أضف شهور الاستحقاق', 'bills covered': 'الفواتير مغطاة',
   'Add your emergency fund balance under Balances to see how many months it covers.': 'أضف رصيد صندوق الطوارئ في «الأرصدة» لترى كم شهراً يغطي.',
@@ -818,6 +862,18 @@ const AR = {
   'Car loan': 'قرض السيارة', 'Rent': 'الإيجار', 'Mom': 'الوالدة', 'Dad': 'الوالد', 'Sister': 'الأخت', 'Brother': 'الأخ', 'household': 'مصروف البيت', 'extra': 'إضافي',
   'Extra savings': 'ادخار إضافي', 'Car insurance and service': 'تأمين السيارة وصيانتها', 'Gifts and occasions': 'هدايا ومناسبات', 'Car wash': 'غسيل السيارة', 'Pharmacy': 'صيدلية',
   'Payroll Planner backup': 'نسخة احتياطية من مخطط الراتب',
+  'Savings rate': 'نسبة الادخار', 'Saved': 'المدخر', 'Set aside': 'المجنّب', 'Living': 'المعيشة', 'Tap a box to see what’s in it.': 'اضغط على أي مربع لترى ما بداخله.',
+  'Money you won’t touch for years.': 'مال لن تلمسه لسنوات.', 'Savings and emergency fund. Leftover counts once you move it.': 'الادخار وصندوق الطوارئ. المتبقي يُحسب عندما تنقله.',
+  'Saved up for planned spending, so it isn’t savings.': 'مبالغ تُجمع لمصاريف مخطط لها، لذلك ليست ادخاراً.', 'What you spend on obligations, family and day to day.': 'ما تصرفه على الالتزامات والأهل والمصاريف اليومية.',
+  'Leftover moved': 'المتبقي المنقول', 'Nothing this month': 'لا شيء هذا الشهر', 'I moved it': 'نقلته', 'Every dinar has a job this month.': 'كل دينار له وجهة هذا الشهر.',
+  'Not assigned yet. When this pay period starts, move it to savings.': 'غير مخصص بعد. عندما تبدأ هذه الفترة، انقله إلى الادخار.', 'Leftover move removed.': 'أُلغي نقل المتبقي.',
+  'How this pay period went': 'كيف سارت هذه الفترة', 'See how it went': 'عرض التفاصيل', 'Invested and saved as planned': 'المستثمر والمدخر حسب الخطة',
+  'Leftover moved to savings': 'المتبقي المنقول إلى الادخار', 'Unspent personal money moved': 'ما تبقى من المصروف الشخصي ونُقل', 'Personal account overspend': 'تجاوز المصروف الشخصي',
+  'Saved in total': 'إجمالي المدخر', 'Planned transfers count as done. Leftover and unspent personal money count once you move them; overspending comes off.': 'التحويلات المخططة تُحسب كأنها تمت. المتبقي وما تبقى من المصروف الشخصي يُحسبان عند نقلهما، والتجاوز يُخصم.',
+  'Money saved up for planned spending, so it isn’t savings. Give each fund a target; anything above it is really savings.': 'مبالغ تُجمع لمصاريف مخطط لها، لذلك ليست ادخاراً. حدّد هدفاً لكل صندوق؛ ما يزيد عنه هو ادخار فعلاً.',
+  'Not in this month’s plan': 'ليس ضمن خطة هذا الشهر', 'no target yet': 'لا يوجد هدف بعد', 'No account for it yet.': 'لا يوجد حساب له بعد.', 'Add its balance': 'أضف رصيده', 'Set a target': 'حدّد هدفاً',
+  'Target (KD)': 'الهدف (د.ك)', 'Your next trip’s cost, for example. Anything above it is really savings.': 'تكلفة رحلتك القادمة مثلاً. ما يزيد عنه هو ادخار فعلاً.', 'Saves up for': 'يُجمع لأجل',
+  'Nothing in the plan': 'لا شيء في الخطة', 'At its target.': 'وصل إلى هدفه.', 'Enter a target of zero or more, or leave it empty.': 'أدخل هدفاً يساوي صفراً أو أكثر، أو اتركه فارغاً.',
   'Changes the app’s words. Names you typed stay as you typed them, except common ones like Groceries.': 'يغيّر لغة التطبيق. الأسماء التي كتبتها تبقى كما هي، ما عدا الشائعة مثل «بقالة».',
 };
 const AR_HTML = {
@@ -846,12 +902,29 @@ function arCount(n, one, two, few, many) {
 const arMonths = (n) => arCount(n, 'شهر', 'شهرين', 'أشهر', 'شهراً');
 const arDays = (n) => arCount(n, 'يوم', 'يومين', 'أيام', 'يوماً');
 const AR_RULES = [
+  R(/^Savings rate (-?\d+)% · (.+) KD$/, (m, a, b) => `نسبة الادخار ${a}% · ${b} د.ك`),
+  R(/^Plan (-?\d+)% · (.+) KD$/, (m, a, b) => `الخطة ${a}% · ${b} د.ك`),
+  R(/^(-?\d+)% if you move the leftover$/, (m, a) => `${a}% إذا نقلت المتبقي`),
+  R(/^([\d,.]+) KD a month$/, (m, a) => `${a} د.ك شهرياً`),
+  R(/^(.+) KD still isn’t assigned\. Move it to (.+), then tap I moved it\.$/, (m, a, b) => `${a} د.ك لم يُخصص بعد. انقله إلى ${trPhrase(b)}، ثم اضغط «نقلته».`),
+  R(/^Not assigned yet, so it doesn’t count as saved\. Move it to (.+), then tap I moved it\.$/, (m, a) => `غير مخصص بعد، لذلك لا يُحسب ادخاراً. انقله إلى ${trPhrase(a)}، ثم اضغط «نقلته».`),
+  R(/^Moved to (.+) on (.+)\. It counts as saved\.$/, (m, a, b) => `نُقل إلى ${trPhrase(a)} في ${b}. يُحسب ادخاراً.`),
+  R(/^You moved (.+) KD, but the plan now leaves (.+) KD\. Only that counts as saved\.$/, (m, a, b) => `نقلت ${a} د.ك، لكن الخطة الآن تترك ${b} د.ك فقط، وهو ما يُحسب ادخاراً.`),
+  R(/^You saved (-?\d+)% of your salary\. The plan was (-?\d+)%\.( Something from that pay period isn’t moved yet\.)?$/, (m, a, b, c) => `ادّخرت ${a}% من راتبك. الخطة كانت ${b}%.${c ? ' هناك مبلغ من تلك الفترة لم يُنقل بعد.' : ''}`),
+  R(/^Leftover not moved: (.+) KD$/, (m, a) => `متبقٍ لم يُنقل: ${a} د.ك`),
+  R(/^Unspent personal money: (.+) KD$/, (m, a) => `ما تبقى من المصروف الشخصي: ${a} د.ك`),
+  R(/^target (.+) KD$/, (m, a) => `الهدف ${a} د.ك`),
+  R(/^(.+) KD above target\. Move it to (.+), then tap I moved it\.$/, (m, a, b) => `${a} د.ك فوق الهدف. انقله إلى ${trPhrase(b)}، ثم اضغط «نقلته».`),
+  R(/^(.+) KD to go$/, (m, a) => `باقي ${a} د.ك`),
+  R(/^(.+) of (.+) KD target$/, (m, a, b) => `${a} من هدف ${b} د.ك`),
+  R(/^Moved (.+) KD from (.+) to (.+)\.$/, (m, a, b, c) => `نُقل ${a} د.ك من ${trPhrase(b)} إلى ${trPhrase(c)}.`),
+  R(/^A common guideline is to save at least 20% of your salary, investing included: (.+) KD a month\.$/, (m, a) => `من القواعد الشائعة أن تدخر 20% على الأقل من راتبك، شاملاً الاستثمار: ${a} د.ك شهرياً.`),
+  R(/^Your savings rate is (\d+)%: (.+) KD a month invested and saved\. Move the (.+) KD leftover to savings each payday and it’s (\d+)%\. Tap \+ whenever you spend\.$/, (m, a, b, c, d) => `نسبة ادخارك ${a}%: ${b} د.ك شهرياً بين استثمار وادخار. انقل المتبقي ${c} د.ك إلى الادخار كل يوم راتب لتصبح ${d}%. اضغط + كلما صرفت.`),
+  R(/^Your savings rate is (\d+)%: (.+) KD a month invested and saved\. Tap \+ whenever you spend\.$/, (m, a, b) => `نسبة ادخارك ${a}%: ${b} د.ك شهرياً بين استثمار وادخار. اضغط + كلما صرفت.`),
   R(/^Step (\d+) of (\d+)$/, (m, a, b) => `الخطوة ${a} من ${b}`),
-  R(/^A common guideline is to keep at least 20% of your salary: (.+) KD a month\.$/, (m, a) => `من القواعد الشائعة أن تحتفظ بـ\u00A020% على الأقل من راتبك: ${a} د.ك شهرياً.`),
   R(/^That’s (.+) KD more than you earn\. Lower something before you finish\.$/, (m, a) => `هذا أكثر من دخلك بـ\u00A0${a} د.ك. خفّض شيئاً قبل أن تنهي.`),
   R(/^(.+) KD is left over\. It stays as leftover until you give it a job\.$/, (m, a) => `يتبقى ${a} د.ك، ويبقى في «المتبقي» حتى تخصص له وجهة.`),
   R(/^Your plan spends (.+) KD more than you earn\. Go back and lower something\.$/, (m, a) => `خطتك تصرف أكثر من دخلك بـ\u00A0${a} د.ك. ارجع وخفّض شيئاً.`),
-  R(/^You keep (.+) KD a month \((\d+)% of your salary\), counting savings, investing and leftover\. Tap \+ whenever you spend\.$/, (m, a, b) => `تحتفظ بـ\u00A0${a} د.ك شهرياً (${b}% من راتبك) بين ادخار واستثمار ومتبقٍ. اضغط + كلما صرفت.`),
   R(/^Your plan spends (.+) KD more than you earn from (.+)\. Lower a line until leftover is back at zero or above\.$/, (m, a, b) => `خطتك تصرف أكثر من دخلك بـ\u00A0${a} د.ك ابتداءً من ${b}. خفّض بنداً حتى يعود المتبقي إلى صفر أو أكثر.`),
   R(/^Day (\d+) of (\d+)$/, (m, a, b) => `اليوم ${a} من ${b}`),
   R(/^(\d+)% of the (.+) KD plan spent$/, (m, a, b) => `صُرف ${a}% من خطة ${b} د.ك`),
@@ -875,8 +948,6 @@ const AR_RULES = [
   R(/^(.+), (.+) KD( refund)?\. Edit$/, (m, a, b, c) => `${trPhrase(a)}، ${b} د.ك${c ? ' استرجاع' : ''}. تعديل`),
   R(/^(.+) · refund$/, (m, a) => `${trPhrase(a)} · استرجاع`),
   R(/^Salary split: (.+), leftover (.+) KD$/, (m, a, b) => `توزيع الراتب: ${a.split(', ').map((part) => { const g = part.match(/^(.+) ([−\d,.]+) KD$/); return g ? `${trPhrase(g[1])} ${g[2]} د.ك` : part; }).join('، ')}، المتبقي ${b} د.ك`),
-  R(/^KD · (\d+)% of salary$/, (m, a) => `د.ك · ${a}% من الراتب`),
-  R(/^(\d+)% of salary$/, (m, a) => `${a}% من الراتب`),
   R(/^Your plan · (.+)$/, (m, a) => `خطتك · ${a}`),
   R(/^\+ Add to (.+)$/, (m, a) => `+ إضافة إلى ${AR_GROUP_LOWER[a] || trPhrase(a)}`),
   R(/^Add to (.+)$/, (m, a) => `إضافة إلى ${AR_GROUP_LOWER[a] || trPhrase(a)}`),
@@ -889,7 +960,6 @@ const AR_RULES = [
   R(/^Raise (.+) by (\d+)$/, (m, a, b) => `رفع ${trPhrase(a)} بمقدار ${b}`),
   R(/^Show (\w+ \d{4})$/, (m, a) => `عرض ${a}`),
   R(/^Leftover (.+) KD$/, (m, a) => `المتبقي ${a} د.ك`),
-  R(/^Kept (.+) KD · (\d+)%$/, (m, a, b) => `المحتفظ به ${a} د.ك · ${b}%`),
   R(/^(Ends|Starts): (.+) ([+−-]?[\d,.]+)$/, (m, a, b, c) => `${a === 'Ends' ? 'ينتهي' : 'يبدأ'}: ${trPhrase(b)} ${c}`),
   R(/^(.+) (ends|starts)$/, (m, a, b) => `${b === 'ends' ? 'ينتهي' : 'يبدأ'} ${trPhrase(a)}`),
   R(/^Starts (.+)$/, (m, a) => `تبدأ ${a}`),
@@ -1072,10 +1142,21 @@ function summarize(plan, month) {
   plan.lines.forEach((l) => { if (isActive(l, month)) groups[l.group] = r3((groups[l.group] || 0) + monthlyKD(l, rate)); });
   const out = r3(GROUP_KEYS.reduce((s, k) => s + groups[k], 0));
   const leftover = r3(income - out);
-  const kept = r3(groups.Investing + groups.Savings + Math.max(0, leftover));
-  const spending = r3(groups.Obligations + groups.Family + groups['Spending accounts'] + groups['Yearly costs']);
-  return { month, income, groups, out, leftover, kept, spending };
+  /* Every dinar has one job: invested, saved, set aside for planned spending, or living costs.
+     Leftover has no job yet; it counts as saved only once it's moved (plan.leftoverMoves). */
+  const pl = personalLine(plan);
+  const setAside = r3(plan.lines.filter((l) => isActive(l, month) && isSetAside(l, pl)).reduce((s, l) => s + monthlyKD(l, rate), 0));
+  const rec = plan.leftoverMoves && plan.leftoverMoves[month];
+  const moved = rec ? r3(Math.min(Number(rec.amount) || 0, Math.max(0, leftover))) : 0;
+  const invested = groups.Investing;
+  const saved = r3(groups.Savings + moved);
+  const living = r3(out - groups.Investing - groups.Savings - setAside);
+  const unassigned = r3(Math.max(0, leftover) - moved);
+  const rateOf = (x) => (income > EPS ? x / income : 0);
+  return { month, income, groups, out, leftover, invested, saved, setAside, living, moved, unassigned, savingsRate: rateOf(invested + saved), potentialRate: rateOf(invested + groups.Savings + Math.max(0, leftover)) };
 }
+/* Set aside = saved up for planned spending: yearly costs, and spending accounts other than the personal one (travel, shopping). */
+function isSetAside(l, pl) { return l.group === 'Yearly costs' || (l.group === 'Spending accounts' && !(pl && l.id === pl.id)); }
 /* An increase may only use money that is in leftover in every month the line runs. */
 function capLine(plan, oldLine, newLine, months) {
   const rate = Number(plan.settings.usdRate) || 0;
@@ -1204,6 +1285,20 @@ function periodResult(plan, tx, key, todayIso) {
   if (ps.when !== 'past' || ps.planAmt <= EPS || !ps.items.length) return null;
   const sweep = plan.sweeps && plan.sweeps[key] ? plan.sweeps[key] : null;
   return { key, left: ps.left, spent: ps.spent, planAmt: ps.planAmt, sweep };
+}
+/* What a finished pay period actually saved: planned transfers (counted as done), leftover moved,
+   unspent personal money moved, minus personal overspend. */
+function periodSavings(plan, tx, key, todayIso) {
+  const sum = summarize(plan, key);
+  const ps = personalSummary(plan, tx, key, todayIso);
+  const tracked = ps.planAmt > EPS && ps.items.length > 0;
+  const transfers = r3(sum.invested + sum.groups.Savings);
+  const sweep = plan.sweeps && plan.sweeps[key] ? r3(Number(plan.sweeps[key].amount) || 0) : 0;
+  const over = tracked && ps.left < -EPS ? r3(-ps.left) : 0;
+  const unspent = tracked && ps.left > EPS && sweep <= EPS ? ps.left : 0;
+  const actual = r3(transfers + sum.moved + sweep - over);
+  const rateOf = (x) => (sum.income > EPS ? x / sum.income : 0);
+  return { key, income: sum.income, transfers, moved: sum.moved, unassigned: sum.unassigned, sweep, unspent, over, actual, plannedRate: rateOf(transfers), actualRate: rateOf(actual) };
 }
 /* PURE:END */
 
@@ -1338,7 +1433,7 @@ const clone = (x) => JSON.parse(JSON.stringify(x));
 /* State + storage */
 const TABS = ['spending', 'plan', 'accounts', 'settings'];
 const TITLES = { spending: 'Spending', plan: 'Plan', accounts: 'Accounts', settings: 'Settings' };
-const state = { plan: null, tx: [], meta: { lastBackup: null, tab: 'spending' }, month: null, tab: 'spending', edit: null, add: null, cat: null, setup: null, pendingImport: null, toastTimer: null, undo: null };
+const state = { plan: null, tx: [], meta: { lastBackup: null, tab: 'spending' }, month: null, tab: 'spending', edit: null, add: null, cat: null, setup: null, pendingImport: null, toastTimer: null, undo: null, kpi: null };
 let saveTimer = null;
 function readStore() {
   try { const raw = localStorage.getItem(STORE_KEY); return raw ? JSON.parse(raw) : null; } catch (e) { return null; }
@@ -1390,6 +1485,16 @@ function normalize(raw) {
   }
   if (!p.balances.some((b) => b.kind === 'yearly')) p.balances.push({ id: uid('b'), name: dn('Yearly bills pot'), amount: null, kind: 'yearly' });
   p.sweeps = p.sweeps && typeof p.sweeps === 'object' && !Array.isArray(p.sweeps) ? p.sweeps : {};
+  p.leftoverMoves = p.leftoverMoves && typeof p.leftoverMoves === 'object' && !Array.isArray(p.leftoverMoves) ? p.leftoverMoves : {};
+  p.balances.forEach((b) => { if (b.target != null && !(Number(b.target) >= 0)) delete b.target; });
+  /* Link each set-aside spending account (travel, shopping) to the balance that holds its money, by name, once. */
+  const pl = personalLine(p);
+  p.lines.filter((l) => l.group === 'Spending accounts' && !(pl && l.id === pl.id)).forEach((l) => {
+    if (p.balances.some((b) => b.lineId === l.id)) return;
+    const nm = (l.name || '').trim().toLowerCase();
+    const b = p.balances.find((x) => x.lineId === undefined && (x.kind || 'account') === 'account' && (x.name || '').trim().toLowerCase() === nm);
+    if (b) b.lineId = l.id;
+  });
   return p;
 }
 function sanitizeTx(list) {
@@ -1457,7 +1562,7 @@ function renderWelcome() {
 const SETUP_STEPS = [
   { key: 'salary', title: 'Your salary', lead: 'What lands in your account each month, after deductions?' },
   { key: 'fixed', title: 'Fixed costs', lead: 'What goes out every month no matter what? Leave blank anything that doesn’t apply.' },
-  { key: 'keep', title: 'Saving and investing', lead: 'How much do you want to keep each month?' },
+  { key: 'keep', title: 'Saving and investing', lead: 'How much do you want to save and invest each month?' },
   { key: 'spend', title: 'Spending money', lead: 'How much do you spend day to day? The Spending tab tracks this.' },
   { key: 'review', title: 'Your plan', lead: 'Here’s where your salary goes. You can change any of it later.' },
 ];
@@ -1559,7 +1664,7 @@ function updateSetupBar() {
   if (!tip) return;
   const key = SETUP_STEPS[su.step].key;
   tip.dataset.tone = '';
-  if (key === 'keep') tip.textContent = t.salary > 0 ? `A common guideline is to keep at least 20% of your salary: ${plainKD(Math.round(t.salary * 0.2))} KD a month.` : '';
+  if (key === 'keep') tip.textContent = t.salary > 0 ? `A common guideline is to save at least 20% of your salary, investing included: ${plainKD(Math.round(t.salary * 0.2))} KD a month.` : '';
   if (key === 'spend') {
     if (t.left < -EPS) { tip.textContent = `That’s ${plainKD(-t.left)} KD more than you earn. Lower something before you finish.`; tip.dataset.tone = 'bad'; }
     else tip.textContent = `${plainKD(t.left)} KD is left over. It stays as leftover until you give it a job.`;
@@ -1577,10 +1682,13 @@ function setupReview() {
     if (groups[g.key] > EPS) card.append(h('div', { class: 'su-sum-row' }, h('span', {}, h('span', { class: 'sw', style: `background:${g.c}` }), g.key), h('b', {}, money(groups[g.key], { unit: 'KD' }))));
   });
   card.append(h('div', { class: 'su-sum-row total' }, h('span', {}, h('span', { class: 'sw', style: `background:${LEFT.c}` }), 'Leftover'), h('b', { style: t.left < -EPS ? 'color: var(--bad)' : null }, money(t.left, { unit: 'KD' }))));
-  const kept = r3(groups.Investing + groups.Savings + Math.max(0, t.left));
+  const committed = r3(groups.Investing + groups.Savings);
+  const spare = Math.max(0, t.left);
   const tip = t.left < -EPS
     ? h('p', { class: 'su-tip', 'data-tone': 'bad', text: `Your plan spends ${plainKD(-t.left)} KD more than you earn. Go back and lower something.` })
-    : h('p', { class: 'su-tip', text: `You keep ${plainKD(kept)} KD a month (${pct(kept, t.salary)}% of your salary), counting savings, investing and leftover. Tap + whenever you spend.` });
+    : h('p', { class: 'su-tip', text: spare > EPS
+      ? `Your savings rate is ${pct(committed, t.salary)}%: ${plainKD(committed)} KD a month invested and saved. Move the ${plainKD(spare)} KD leftover to savings each payday and it’s ${pct(committed + spare, t.salary)}%. Tap + whenever you spend.`
+      : `Your savings rate is ${pct(committed, t.salary)}%: ${plainKD(committed)} KD a month invested and saved. Tap + whenever you spend.` });
   return [card, tip];
 }
 function setupNext() {
@@ -1791,6 +1899,7 @@ function renderTx(ps) {
 function renderPlanTab() {
   const sum = summarize(state.plan, state.month);
   renderHero(sum);
+  renderPeriodCard();
   renderLedger(sum);
   renderTimeline();
 }
@@ -1821,23 +1930,148 @@ function renderHero(sum) {
     acc += len;
   });
   svg.setAttribute('aria-label', `Salary split: ${GROUPS.map((g) => `${g.key} ${plainKD(sum.groups[g.key])} KD`).join(', ')}, leftover ${plainKD(sum.leftover)} KD`);
+  /* Headline: savings rate. A finished pay period shows what was actually saved against the plan. */
+  let rate = sum.savingsRate; let label = 'Savings rate'; let sub;
+  if (state.month < currentPeriod() && state.month >= state.plan.settings.startMonth) {
+    const r = periodSavings(state.plan, state.tx, state.month, todayIso());
+    rate = r.actualRate; label = 'Saved';
+    sub = `Plan ${pctTxt(r.plannedRate)} · ${plainKD(Math.round(r.actual))} KD`;
+  } else if (sum.unassigned > EPS) sub = `${pctTxt(sum.potentialRate)} if you move the leftover`;
+  else sub = `${plainKD(Math.round(sum.invested + sum.saved))} KD a month`;
+  $('#rateLabel').textContent = label;
   const lb = $('#leftBig');
-  lb.replaceChildren(money(sum.leftover));
-  lb.dataset.neg = String(sum.leftover < -EPS);
-  const digits = splitMoney(sum.leftover).int.length + (sum.leftover < -EPS ? 1 : 0);
-  lb.style.fontSize = digits >= 6 ? '0.66em' : digits >= 4 ? '0.82em' : '';
-  $('#leftSub').textContent = sum.leftover < -EPS ? 'KD short this month' : `KD · ${pct(Math.max(0, sum.leftover), sum.income)}% of salary`;
-  $('#kKept').replaceChildren(money(sum.kept, { noFils: true, unit: 'KD' }));
-  $('#kKeptS').textContent = `${pct(sum.kept, sum.income)}% of salary`;
-  $('#kInv').replaceChildren(money(sum.groups.Investing, { noFils: true, unit: 'KD' }));
-  $('#kInvS').textContent = `${pct(sum.groups.Investing, sum.income)}% of salary`;
-  $('#kSpend').replaceChildren(money(sum.spending, { noFils: true, unit: 'KD' }));
-  $('#kSpendS').textContent = `${pct(sum.spending, sum.income)}% of salary`;
+  lb.replaceChildren(h('bdi', { class: 'num', dir: 'ltr' }, String(Math.round(rate * 100)), h('span', { class: 'pct-sign', text: '%' })));
+  lb.dataset.neg = String(rate < 0);
+  lb.style.fontSize = '';
+  $('#leftSub').textContent = sub;
+  const tile = (id, v) => { $(`#k${id}`).replaceChildren(money(v, { noFils: true, unit: 'KD' })); $(`#k${id}S`).textContent = `${pct(v, sum.income)}%`; };
+  tile('Inv', sum.invested); tile('Saved', sum.saved); tile('Aside', sum.setAside); tile('Living', sum.living);
+  renderKpiDetail(sum);
+  renderLeftoverRow(sum);
   const ctl = $('#salaryCtl');
   ctl.replaceChildren();
   const active = state.plan.income.filter((i) => isActive(i, state.month));
   const salary = active[0] || state.plan.income[0];
   if (salary) ctl.append(amountControl({ kind: 'income', item: salary, label: salary.name }));
+}
+const pctTxt = (frac) => `${Math.round(frac * 100)}%`;
+const BUCKET_NOTES = {
+  invested: 'Money you won’t touch for years.',
+  saved: 'Savings and emergency fund. Leftover counts once you move it.',
+  aside: 'Saved up for planned spending, so it isn’t savings.',
+  living: 'What you spend on obligations, family and day to day.',
+};
+function bucketLines(sum) {
+  const rate = state.plan.settings.usdRate;
+  const pl = personalLine(state.plan);
+  const act = state.plan.lines.filter((l) => isActive(l, state.month));
+  const rows = (pred) => act.filter(pred).map((l) => [l.name, monthlyKD(l, rate)]);
+  return {
+    invested: rows((l) => l.group === 'Investing'),
+    saved: [...rows((l) => l.group === 'Savings'), ...(sum.moved > EPS ? [['Leftover moved', sum.moved]] : [])],
+    aside: rows((l) => isSetAside(l, pl)),
+    living: rows((l) => ['Obligations', 'Family', 'Spending accounts'].includes(l.group) && !isSetAside(l, pl)),
+  };
+}
+function renderKpiDetail(sum) {
+  const k = state.kpi;
+  $$('[data-kpi]').forEach((b) => b.setAttribute('aria-expanded', String(b.dataset.kpi === k)));
+  const host = $('#kpiDetail');
+  $('#kpiHint').hidden = !!k;
+  host.hidden = !k;
+  if (!k) { host.replaceChildren(); return; }
+  const list = bucketLines(sum)[k];
+  host.replaceChildren(
+    h('p', { class: 'kpi-detail-note', text: BUCKET_NOTES[k] }),
+    ...(list.length ? list.map(([n, v]) => h('div', { class: 'kpi-detail-row' }, h('span', { text: n }), money(v, { unit: 'KD' }))) : [h('div', { class: 'kpi-detail-row' }, h('span', { text: 'Nothing this month' }))]),
+  );
+}
+/* Leftover has no job yet. Recording that it was moved to savings makes it count as saved for that pay period. */
+function renderLeftoverRow(sum) {
+  const host = $('#loRow');
+  const key = state.month;
+  const cur = currentPeriod();
+  const sv = savingsBalance();
+  const svName = sv ? sv.name : dn('Savings account');
+  const rec = state.plan.leftoverMoves[key];
+  const canRecord = key <= cur && key >= state.plan.settings.startMonth;
+  const neg = sum.leftover < -EPS;
+  const top = h('div', { class: 'lo-top' }, h('span', { class: 'eyebrow', text: 'Leftover' }),
+    h('span', { class: 'lo-v', 'data-neg': String(neg) }, money(sum.leftover, { unit: 'KD' }), h('span', { class: 'lo-pct' }, ' · ', h('bdi', { dir: 'ltr', text: `${pct(sum.leftover, sum.income)}%` }))));
+  let note;
+  const actions = [];
+  if (neg) note = 'This month spends more than you earn. Lower a line to fix it.';
+  else if (sum.leftover <= EPS) note = 'Every dinar has a job this month.';
+  else if (key > cur) note = 'Not assigned yet. When this pay period starts, move it to savings.';
+  else if (sum.unassigned > EPS) {
+    note = sum.moved > EPS ? `${plainKD(sum.unassigned)} KD still isn’t assigned. Move it to ${svName}, then tap I moved it.` : `Not assigned yet, so it doesn’t count as saved. Move it to ${svName}, then tap I moved it.`;
+    if (canRecord) actions.push(h('button', { class: 'btn band-btn', type: 'button', text: 'I moved it', onclick: () => leftoverMove(key) }));
+  } else note = `Moved to ${svName} on ${longDate(rec.at)}. It counts as saved.`;
+  if (rec && Number(rec.amount) > Math.max(0, sum.leftover) + EPS) note = `You moved ${plainKD(rec.amount)} KD, but the plan now leaves ${plainKD(Math.max(0, sum.leftover))} KD. Only that counts as saved.`;
+  if (rec && canRecord) actions.push(h('button', { class: 'link-btn lo-undo', type: 'button', text: 'Undo', onclick: () => undoLeftoverMove(key) }));
+  host.replaceChildren(...[top, h('p', { class: 'lo-note', text: note }), actions.length ? h('div', { class: 'lo-actions' }, actions) : null].filter(Boolean));
+}
+function addToSavings(amount) {
+  let sv = savingsBalance();
+  if (!sv) { sv = { id: uid('b'), name: dn('Savings account'), amount: null, kind: 'savings' }; state.plan.balances.push(sv); }
+  sv.amount = r3((Number(sv.amount) || 0) + amount);
+  sv.asOf = todayIso();
+  return sv;
+}
+function leftoverMove(key) {
+  const amount = summarize(state.plan, key).unassigned;
+  if (amount <= EPS) return;
+  const before = clone(state.plan);
+  const sv = addToSavings(amount);
+  const prev = state.plan.leftoverMoves[key];
+  state.plan.leftoverMoves[key] = { amount: r3((prev ? Number(prev.amount) || 0 : 0) + amount), at: todayIso() };
+  writeStore(); render();
+  toast(`Added ${plainKD(amount)} KD to ${sv.name}.`, () => { state.plan = before; writeStore(); render(); });
+}
+function undoLeftoverMove(key) {
+  const rec = state.plan.leftoverMoves[key]; if (!rec) return;
+  const before = clone(state.plan);
+  const sv = savingsBalance();
+  if (sv && sv.amount != null) sv.amount = r3(Math.max(0, Number(sv.amount) - (Number(rec.amount) || 0)));
+  delete state.plan.leftoverMoves[key];
+  writeStore(); render();
+  toast('Leftover move removed.', () => { state.plan = before; writeStore(); render(); });
+}
+/* A finished pay period: what was actually saved against the plan, and anything still to move. */
+function renderPeriodCard() {
+  const host = $('#periodCard');
+  host.replaceChildren();
+  host.hidden = true;
+  const cur = currentPeriod();
+  const start = state.plan.settings.startMonth;
+  if (state.month < cur && state.month >= start) {
+    const r = periodSavings(state.plan, state.tx, state.month, todayIso());
+    const row = (label, value) => h('div', { class: 'pb-row' }, h('span', { class: 'pb-label', text: label }), value);
+    const rows = [row('Invested and saved as planned', money(r.transfers, { unit: 'KD' }))];
+    if (r.moved > EPS) rows.push(row('Leftover moved to savings', money(r.moved, { unit: 'KD' })));
+    if (r.unassigned > EPS) rows.push(row(`Leftover not moved: ${plainKD(r.unassigned)} KD`, h('button', { class: 'btn small', type: 'button', text: 'I moved it', onclick: () => leftoverMove(r.key) })));
+    if (r.sweep > EPS) rows.push(row('Unspent personal money moved', money(r.sweep, { unit: 'KD' })));
+    if (r.unspent > EPS) rows.push(row(`Unspent personal money: ${plainKD(r.unspent)} KD`, h('button', { class: 'btn small', type: 'button', text: 'I moved it', onclick: () => sweepPeriod(r.key, r.unspent) })));
+    if (r.over > EPS) rows.push(row('Personal account overspend', money(-r.over, { unit: 'KD' })));
+    rows.push(h('div', { class: 'pb-row total' }, h('span', { class: 'pb-label', text: 'Saved in total' }), money(r.actual, { unit: 'KD' })));
+    host.append(
+      h('div', { class: 'card-head' }, h('h2', { class: 'card-title', text: 'How this pay period went' })),
+      h('p', { class: 'card-body', text: `You saved ${pctTxt(r.actualRate)} of your salary. The plan was ${pctTxt(r.plannedRate)}.` }),
+      h('div', { class: 'pb-list' }, rows),
+      h('p', { class: 'hint', text: 'Planned transfers count as done. Leftover and unspent personal money count once you move them; overspending comes off.' }),
+    );
+    host.hidden = false;
+  } else if (state.month === cur) {
+    const prev = addMonths(cur, -1);
+    if (prev < start) return;
+    const r = periodSavings(state.plan, state.tx, prev, todayIso());
+    const pending = r.unassigned > EPS || r.unspent > EPS;
+    host.append(
+      h('div', { class: 'card-head' }, h('h2', { class: 'card-title', text: `${monthShort(prev)} pay period` }), h('button', { class: 'link-btn', type: 'button', text: 'See how it went', onclick: () => { state.month = prev; render(); window.scrollTo({ top: 0 }); } })),
+      h('p', { class: 'card-body', text: `You saved ${pctTxt(r.actualRate)} of your salary. The plan was ${pctTxt(r.plannedRate)}.${pending ? ' Something from that pay period isn’t moved yet.' : ''}` }),
+    );
+    host.hidden = false;
+  }
 }
 function ringTip(e, key) {
   const sum = summarize(state.plan, state.month);
@@ -1974,7 +2208,7 @@ function renderTimeline() {
     hit.addEventListener('click', () => { state.month = m; hideTip(); render(); });
     hit.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); state.month = m; render(); } });
     hit.addEventListener('pointermove', (e) => {
-      const lines = [[LEFT.c, `Leftover ${plainKD(sums[i].leftover)} KD`], [GROUPS[2].c, `Kept ${plainKD(sums[i].kept)} KD · ${pct(sums[i].kept, sums[i].income)}%`]];
+      const lines = [[GROUPS[2].c, `Savings rate ${pctTxt(sums[i].savingsRate)} · ${plainKD(r3(sums[i].invested + sums[i].saved))} KD`], [LEFT.c, `Leftover ${plainKD(sums[i].leftover)} KD`]];
       if (i > 0) changesAt(state.plan, m).forEach((c) => lines.push([null, `${c.ends ? 'Ends' : 'Starts'}: ${c.name} ${c.delta > 0 ? '+' : ''}${plainKD(c.delta)}`]));
       showTip(host, e, monthLong(m), lines);
     });
@@ -2046,6 +2280,8 @@ function renderAccounts() {
     );
   }
 
+  renderFunds();
+
   /* Yearly bills */
   const billsCard = $('#billsCard');
   billsCard.replaceChildren(h('div', { class: 'card-head' }, h('h2', { class: 'card-title', id: 'billsTitle', text: 'Yearly bills' }), h('span', { class: 'card-note' }, money(yb.setAside, { unit: 'KD a month' }))));
@@ -2069,10 +2305,73 @@ function renderAccounts() {
   /* Balances */
   const list = $('#balances');
   list.replaceChildren();
-  bals.filter((b) => b.kind !== 'yearly').forEach((b) => {
+  const fundIds = new Set(fundLines().map((l) => l.id));
+  bals.filter((b) => b.kind !== 'yearly' && !(b.lineId && fundIds.has(b.lineId))).forEach((b) => {
     list.append(h('div', { class: 'bal' }, h('button', { class: 'bal-name', type: 'button', text: b.name, onclick: () => openEdit('balance', b.id) }), balanceInput(b)));
   });
   $('#totalCash').replaceChildren(money(total, { unit: 'KD' }));
+}
+
+/* Set-aside funds: spending accounts other than the personal one (travel, shopping), each with its balance and a target. */
+function fundLines() {
+  const pl = personalLine(state.plan);
+  return state.plan.lines.filter((l) => l.group === 'Spending accounts' && !(pl && l.id === pl.id));
+}
+const fundBalance = (line) => state.plan.balances.find((b) => b.lineId === line.id);
+function addFundBalance(line) {
+  const b = { id: uid('b'), name: line.name, amount: null, kind: 'account', lineId: line.id };
+  state.plan.balances.push(b);
+  writeStore(); render();
+  setTimeout(() => { const el = document.querySelector(`[data-fk="${b.id}:bal"]`); if (el) el.focus(); }, 30);
+}
+function moveFundExtra(id) {
+  const fund = state.plan.balances.find((b) => b.id === id);
+  if (!fund || fund.amount == null || fund.amount === '' || fund.target == null) return;
+  const extra = r3(Number(fund.amount) - Number(fund.target));
+  if (extra <= EPS) return;
+  const before = clone(state.plan);
+  fund.amount = r3(Number(fund.amount) - extra);
+  fund.asOf = todayIso();
+  const sv = addToSavings(extra);
+  writeStore(); render();
+  toast(`Moved ${plainKD(extra)} KD from ${fund.name} to ${sv.name}.`, () => { state.plan = before; writeStore(); render(); });
+}
+function renderFunds() {
+  const host = $('#fundsCard');
+  const lines = fundLines();
+  host.replaceChildren();
+  host.hidden = !lines.length;
+  if (!lines.length) return;
+  const cur = currentPeriod();
+  const rate = state.plan.settings.usdRate;
+  const monthly = r3(lines.filter((l) => isActive(l, cur)).reduce((sum, l) => sum + monthlyKD(l, rate), 0));
+  const sv = savingsBalance();
+  const svName = sv ? sv.name : dn('Savings account');
+  host.append(
+    h('div', { class: 'card-head' }, h('h2', { class: 'card-title', id: 'fundsTitle', text: 'Set aside' }), h('span', { class: 'card-note' }, money(monthly, { unit: 'KD a month' }))),
+    h('p', { class: 'card-note', text: 'Money saved up for planned spending, so it isn’t savings. Give each fund a target; anything above it is really savings.' }),
+  );
+  lines.forEach((l) => {
+    const b = fundBalance(l);
+    const amt = b && b.amount != null && b.amount !== '' ? Number(b.amount) : null;
+    const target = b && b.target != null ? Number(b.target) : null;
+    const per = isActive(l, cur) ? `${plainKD(monthlyKD(l, rate))} KD a month` : 'Not in this month’s plan';
+    const sub = h('span', { class: 'fund-sub' }, h('span', { text: per }), ' · ', h('span', { text: target != null ? `target ${plainKD(target)} KD` : 'no target yet' }));
+    const name = h('button', { class: 'bal-name', type: 'button', text: l.name, onclick: () => (b ? openEdit('balance', b.id) : openEdit('line', l.id)) });
+    const row = h('div', { class: 'fund' }, h('div', { class: 'fund-top' }, h('div', { class: 'fund-main' }, name, sub), b ? balanceInput(b) : null));
+    if (!b) {
+      row.append(h('div', { class: 'fund-msg-row' }, h('p', { class: 'fund-msg', text: 'No account for it yet.' }), h('button', { class: 'link-btn', type: 'button', text: 'Add its balance', onclick: () => addFundBalance(l) })));
+    } else if (target == null) {
+      row.append(h('div', { class: 'fund-msg-row' }, h('button', { class: 'link-btn', type: 'button', text: 'Set a target', onclick: () => openEdit('balance', b.id) })));
+    } else {
+      const share = target > EPS ? Math.min(100, ((amt || 0) / target) * 100) : 100;
+      row.append(h('div', { class: 'meter', role: 'img', 'aria-label': `${plainKD(amt || 0)} of ${plainKD(target)} KD target` }, h('div', { class: 'fill', style: `width:${share}%` })));
+      const extra = amt != null ? r3(amt - target) : null;
+      if (extra != null && extra > EPS) row.append(h('div', { class: 'fund-msg-row' }, h('p', { class: 'fund-msg', text: `${plainKD(extra)} KD above target. Move it to ${svName}, then tap I moved it.` }), h('button', { class: 'btn small', type: 'button', text: 'I moved it', onclick: () => moveFundExtra(b.id) })));
+      else if (amt != null) row.append(h('p', { class: 'fund-msg', text: amt >= target - EPS ? 'At its target.' : `${plainKD(r3(target - amt))} KD to go` }));
+    }
+    host.append(row);
+  });
 }
 
 /* Settings tab */
@@ -2291,6 +2590,12 @@ function openEdit(kind, id, group) {
     $('#fName').value = item.name; $('#fName').placeholder = 'e.g. Travel account';
     $('#fAmount').value = item.amount == null ? '' : fmtInput(item.amount);
     $('#fAmountL').textContent = 'Balance (KD)';
+    const isFund = (item.kind || 'account') === 'account';
+    $('#fTargetWrap').hidden = !isFund; $('#fFundWrap').hidden = !isFund;
+    $('#fTarget').value = item.target != null ? fmtInput(item.target) : '';
+    const fl = fundLines();
+    $('#fFund').replaceChildren(h('option', { value: '', text: 'Nothing in the plan' }), ...fl.map((l) => h('option', { value: l.id, text: l.name })));
+    $('#fFund').value = item.lineId && fl.some((l) => l.id === item.lineId) ? item.lineId : '';
   }
   del.hidden = !id || (kind === 'balance' && ['emergency', 'savings', 'yearly'].includes(item.kind)) || (kind === 'income' && state.plan.income.length <= 1) || (kind === 'line' && id === state.plan.settings.personalLineId);
   state.edit = { kind, id, item };
@@ -2327,6 +2632,15 @@ function saveEdit() {
     const v = raw === '' ? null : parseAmount(raw);
     if (raw !== '' && v == null) { setEditHint('Enter a balance of zero or more.', 'bad'); return; }
     const next = { ...ed.item, name, amount: v == null ? null : r3(v), asOf: todayIso() };
+    if ((ed.item.kind || 'account') === 'account') {
+      const rawT = $('#fTarget').value.trim();
+      const tv = rawT === '' ? null : parseAmount(rawT);
+      if (rawT !== '' && tv == null) { setEditHint('Enter a target of zero or more, or leave it empty.', 'bad'); return; }
+      if (tv == null) delete next.target; else next.target = r3(tv);
+      const f = $('#fFund').value;
+      next.lineId = f;
+      if (f) state.plan.balances.forEach((x) => { if (x.id !== next.id && x.lineId === f) x.lineId = ''; });
+    }
     const idx = state.plan.balances.findIndex((b) => b.id === next.id);
     if (idx >= 0) state.plan.balances[idx] = next; else state.plan.balances.push(next);
     closeSheets(); saveSoon(); render();
@@ -2559,6 +2873,7 @@ function bindStatic() {
   $$('[data-tab]').forEach((b) => b.addEventListener('click', () => setTab(b.dataset.tab)));
   $$('[data-add]').forEach((b) => b.addEventListener('click', () => { if (state.plan) openAdd(null); }));
   $$('[data-lang]').forEach((b) => b.addEventListener('click', () => setLang(b.dataset.lang)));
+  $$('[data-kpi]').forEach((b) => b.addEventListener('click', () => { state.kpi = state.kpi === b.dataset.kpi ? null : b.dataset.kpi; if (state.plan) renderKpiDetail(summarize(state.plan, state.month)); }));
   $('#prevMonth').addEventListener('click', () => { const b = monthBounds(); if (state.month > b.min) { state.month = addMonths(state.month, -1); render(); } });
   $('#nextMonth').addEventListener('click', () => { const b = monthBounds(); if (state.month < b.max) { state.month = addMonths(state.month, 1); render(); } });
   $('#scrim').addEventListener('click', closeSheets);

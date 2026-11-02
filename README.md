@@ -27,5 +27,10 @@ Removing the app from your home screen deletes that data, so use **Settings → 
 
 - Raises go straight to leftover.
 - Any increase comes out of leftover, so the plan never spends more than you earn.
+- Every dinar gets one job: invested, saved, set aside for planned spending (travel, shopping, yearly bills) or living costs.
+  The four add up to 100% with leftover.
+- Leftover counts as saved only once you move it to savings (Plan → I moved it).
+- Set-aside money isn't savings. Give each fund a target; anything above it is really savings.
+- When a pay period ends, the Plan tab shows what you actually saved next to the plan.
 
 Payroll Planner helps you plan. It isn't financial advice.
